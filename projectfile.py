@@ -174,9 +174,11 @@ class invoice(object):
         #tk.Label(self.sp,text='USER').grid(row=0,column=0,sticky=tk.W+tk.N)
         tk.Label(self.sp,text='DATE').grid(row=1,column=0,sticky=tk.W+tk.N)
         tk.Label(self.sp,text='PHONE NO').grid(row=1,column=3,sticky=tk.W+tk.N)
-        tk.Label(self.sp,text='ADDRESS').grid(row=3,column=3,sticky=tk.W+tk.N)#CN AMOUNT
-        tk.Label(self.sp,text='CUSTOMER NAME').grid(row=2,column=3,sticky=tk.W+tk.N)#INVOICE AMOUNT
-        tk.Label(self.sp,text='BARCODE').grid(row=5,column=0,sticky=tk.W+tk.N)
+        tk.Label(self.sp,text='ADDRESS').grid(row=3,column=3,sticky=tk.W+tk.N)
+        tk.Label(self.sp,text='CUSTOMER NAME').grid(row=2,column=3,sticky=tk.W+tk.N)
+        tk.Label(self.sp,text='BARCODE').grid(row=6,column=0,sticky=tk.W+tk.N)
+        tk.Label(self.sp,text='PRODUCT NAME').grid(row=6,column=3,sticky=tk.W+tk.N)
+        tk.Label(self.sp,text='QUANTITY').grid(row=6,column=5,sticky=tk.W+tk.N)
 
         #=====USER NAME=====
         #self.username=StringVar()
@@ -201,7 +203,7 @@ class invoice(object):
         self.Date=tk.Entry(self.sp,textvariable=self.date)
         self.Date.bind("<Return>", self.Print1)
         self.date.set(formatted_date)
-        self.Date.grid(row=1,column=2,sticky=tk.W+tk.N)
+        self.Date.grid(row=1,column=1,sticky=tk.W+tk.N)
 
         #==============PHONE NO===================
         self.phone_no=tk.StringVar()
@@ -229,8 +231,33 @@ class invoice(object):
         self.CustomerName=tk.Entry(self.sp,textvariable=self.customer_name)
         self.customer_name.set('')
         self.CustomerName.grid(row=2,column=4,sticky=tk.W+tk.N)
+
+        #==========BARCODE==========
+
+        self.barcode = tk.StringVar()
+
+        self.BarCode = tk.Entry(self.sp, textvariable=self.barcode)
+        self.barcode.set('')
+        self.BarCode.grid(row=6,column=1,sticky=tk.W+tk.N)
+
+        #==========PRODUCT NAME==========
+
+        self.product_name = tk.StringVar()
+
+        self.ProductName = tk.Entry(self.sp, textvariable=self.product_name)
+        self.product_name.set('')
+        self.ProductName.grid(row=6,column=4,sticky=tk.W+tk.N)
+
+        #==========QUANTITY==========
+
+        self.quantity = tk.StringVar()
+
+        self.Quantity = tk.Entry(self.sp, textvariable=self.quantity)
+        self.quantity.set('')
+        self.Quantity.grid(row=6,column=6,sticky=tk.W+tk.N)
+
         #-----------------------------------treeview----------------------------
-        invoice_list=['Sr no','Barcode','Name','MRP','Price','Quantity','Total']
+        invoice_list=['Sr no','Barcode','Product Name','MRP','Price','Quantity','Total']
         listbar=tk.Frame(self.mas)
 
         bary3=tk.Scrollbar(listbar)
@@ -254,6 +281,8 @@ class invoice(object):
         self.invoiceList.config(xscrollcommand=barx3.set,yscrollcommand=bary3.set)
 
         listbar.pack(fill=tk.X)
+
+        
     def Print1(self, *args):
         print('date:',self.Date.get())
         self.Date.delete(0, tk.END)
@@ -267,9 +296,9 @@ if __name__ == '__main__':
     root.title('')
 
 
-    #myLogin = loginPage(root)
+    myLogin = loginPage(root)
 
-    stock=stocks(root)
+    #stock=stocks(root)
 
     #root.wait_window(myLogin.mySendMail.sp)
     tk.mainloop()
