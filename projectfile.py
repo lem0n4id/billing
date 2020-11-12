@@ -170,10 +170,11 @@ class invoice(object):
         #----------------------------------labels--------------------------------
 
         #tk.Label(self.sp,text='USER').grid(row=0,column=0,sticky=tk.W+tk.N)
-        tk.Label(self.sp,text='DATE').grid(row=1,column=0,sticky=tk.W+tk.N)#INVOICE NO
-        tk.Label(self.sp,text='PHONE NO').grid(row=1,column=3,sticky=tk.W+tk.N)#DATE
+        tk.Label(self.sp,text='DATE').grid(row=1,column=0,sticky=tk.W+tk.N)
+        tk.Label(self.sp,text='PHONE NO').grid(row=1,column=3,sticky=tk.W+tk.N)
         tk.Label(self.sp,text='ADDRESS').grid(row=3,column=3,sticky=tk.W+tk.N)#CN AMOUNT
         tk.Label(self.sp,text='CUSTOMER NAME').grid(row=2,column=3,sticky=tk.W+tk.N)#INVOICE AMOUNT
+        tk.Label(self.sp,text='BARCODE').grid(row=5,column=0,sticky=tk.W+tk.N)
 
         #=====USER NAME=====
         #self.username=StringVar()
@@ -264,9 +265,9 @@ if __name__ == '__main__':
     root.title('')
 
 
-    myLogin = loginPage(root)
+    #myLogin = loginPage(root)
 
-    #stock=stocks(root)
+    stock=stocks(root)
 
     #root.wait_window(myLogin.mySendMail.sp)
     tk.mainloop()
