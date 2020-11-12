@@ -99,6 +99,8 @@ class stocks(object):
         #self.invoiceList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
         self.invoiceList.pack(side=tk.LEFT,fill=tk.BOTH)
 
+        self.invoiceList.insert('','end',values=('a','a','c','d','e'))
+
         barx3.config(command=self.invoiceList.xview)
         bary3.config(command=self.invoiceList.yview)
         
