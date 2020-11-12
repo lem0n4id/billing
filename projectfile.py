@@ -230,7 +230,7 @@ class invoice(object):
         self.customer_name.set('')
         self.CustomerName.grid(row=2,column=4,sticky=tk.W+tk.N)
         #-----------------------------------treeview----------------------------
-        invoice_list=['Code','Name','MRP','Price','Quantity','Total']
+        invoice_list=['Sr no','Barcode','Name','MRP','Price','Quantity','Total']
         listbar=tk.Frame(self.mas)
 
         bary3=tk.Scrollbar(listbar)
