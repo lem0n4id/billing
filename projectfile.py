@@ -269,7 +269,7 @@ class invoice(object):
         self.invoiceList.column(column='#0',width=0,stretch=False)
         for i in range(len(invoice_list)):
             self.invoiceList.heading(i,text=invoice_list[i])
-            self.invoiceList.column(i,width=100)
+            self.invoiceList.column(i,stretch=tk.YES)
         self.invoiceList.column(1,width=100)
         self.invoiceList['height']=20
         #self.invoiceList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
