@@ -188,14 +188,14 @@ class invoice(object):
         tk.Label(self.sp, text='QUANTITY').grid(
             row=6, column=5, sticky=tk.W+tk.N)
 
-        # =====USER NAME=====
-        # self.username=StringVar()
-        # self.username.set(self.user)
-        # tk.Label(self.sp,text=self.user).grid(row=0,column=1,sticky=W+N)
+        #=====USER NAME=====
+        #self.username = StringVar()
+        #self.username.set(self.user)
+        #tk.Label(self.sp, text=self.user).grid(row=0, column=1, sticky=W+N)
 
-        # ADD ENTRY FOR DATE WITH DATE AS OS.DATE
+        #ADD ENTRY FOR DATE WITH DATE AS OS.DATE
 
-        # -------------------------------------entry---------------------------------
+        #-------------------------------------entry(date, phone_no, address, customer_name, barcode, product_name, quantity) all are StringVar
 
         '''
         important note. we have to bind
@@ -204,6 +204,7 @@ class invoice(object):
 
         # ===============Date=======================
         self.date = tk.StringVar()
+
         # today's date
         formatted_date = datetime.date.strftime(
             datetime.date.today(), "%m/%d/%Y")
@@ -217,24 +218,29 @@ class invoice(object):
         self.phone_no = tk.StringVar()
 
         self.PhoneNo = tk.Entry(self.sp, textvariable=self.phone_no)
+        self.PhoneNo.bind("<Return>", self.phone_no_bind_function)
         self.phone_no.set('')
         self.PhoneNo.grid(row=1, column=4, sticky=tk.W+tk.N)
 
         # ===============ADDRESS====================
+        self.address = tk.StringVar()
+
         f1 = tk.Frame(self.sp)
         bary1 = tk.Scrollbar(f1)
         bary1.pack(side=tk.RIGHT, fill=tk.Y)
-        self.address = tk.Text(f1, width=27, height=1)
-
-        self.address.pack(side=tk.LEFT, fill=tk.BOTH)
-        bary1.config(command=self.address.yview)
-        self.address.config(yscrollcommand=bary1.set)
+        self.Address = tk.Text(f1, width=27, height=1)
+        self.Address.bind("<Return>", self.address_bind_function)
+        self.address.set('')
+        self.Address.pack(side=tk.LEFT, fill=tk.BOTH)
+        bary1.config(command=self.Address.yview)
+        self.Address.config(yscrollcommand=bary1.set)
         f1.grid(row=4, column=3, rowspan=2, columnspan=3, sticky=tk.W+tk.N)
 
         # =====CUSTOMER NAME==============================
         self.customer_name = tk.StringVar()
 
         self.CustomerName = tk.Entry(self.sp, textvariable=self.customer_name)
+        self.CustomerName.bind("<Return>", self.customer_name_bind_function)
         self.customer_name.set('')
         self.CustomerName.grid(row=2, column=4, sticky=tk.W+tk.N)
 
@@ -243,6 +249,7 @@ class invoice(object):
         self.barcode = tk.StringVar()
 
         self.BarCode = tk.Entry(self.sp, textvariable=self.barcode)
+        self.BarCode.bind("<Return>", self.barcode_bind_function)
         self.barcode.set('')
         self.BarCode.grid(row=6, column=1, sticky=tk.W+tk.N)
 
@@ -251,6 +258,7 @@ class invoice(object):
         self.product_name = tk.StringVar()
 
         self.ProductName = tk.Entry(self.sp, textvariable=self.product_name)
+        self.ProductName.bind("<Return>", self.product_name_bind_function)
         self.product_name.set('')
         self.ProductName.grid(row=6, column=4, sticky=tk.W+tk.N)
 
@@ -259,6 +267,7 @@ class invoice(object):
         self.quantity = tk.StringVar()
 
         self.Quantity = tk.Entry(self.sp, textvariable=self.quantity)
+        self.Quantity.bind("<Return>", self.quantity_bind_function)
         self.quantity.set('')
         self.Quantity.grid(row=6, column=6, sticky=tk.W+tk.N)
 
@@ -293,6 +302,24 @@ class invoice(object):
     def Print1(self, *args):
         print('date:', self.Date.get())
         self.Date.delete(0, tk.END)
+
+    def phone_no_bind_function(self):
+        pass
+
+    def customer_name_bind_function(self):
+        pass
+
+    def address_bind_function(self):
+        pass
+
+    def barcode_bind_function(self):
+        pass
+
+    def product_name_bind_function(self):
+        pass
+
+    def quantity_bind_function(self):
+        pass
 
     def bill_add(self):
         pass
