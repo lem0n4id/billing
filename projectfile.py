@@ -1,11 +1,9 @@
-from smtplib import *
+import datetime
 import tkinter as tk
 import tkinter.font as font
-import tkinter.ttk as ttk
 import tkinter.messagebox as tkMessageBox
-import string
-import os
-import datetime
+import tkinter.ttk as ttk
+from smtplib import *
 
 
 class loginPage(object):
@@ -143,7 +141,7 @@ class invoice(object):
         self.DATALIST = {}
 
         self.mas = tk.Toplevel(master)
-        # --------------------------------------menubar-------------------------------
+        # ----------------------------------menubar(File[Add Invoice, Delete Invoice, Exit], Project[Update Project List], About[About Me])
         menubar = tk.Menu(self.mas)
         filemenu = tk.Menu(menubar, tearoff=0)
         filemenu.add_command(label='Add Invoice')
@@ -165,16 +163,18 @@ class invoice(object):
         self.sp = tk.LabelFrame(self.mas, text="invoice")
         self.sp.pack(side=tk.TOP, fill=tk.X)
 
-        # ----------------------------------buttons-------------------------------
+        # ----------------------------------buttons(Add, Remove)
         tk.Button(self.sp, text='Add', command=self.bill_add).grid(
             row=6, column=7, sticky=tk.W+tk.N)
         tk.Button(self.sp, text='Remove', command=self.bill_remove).grid(
             row=6, column=8, sticky=tk.W+tk.N)
 
-        # ----------------------------------labels--------------------------------
+        # ----------------------------------labels(DATE, PHONE NO, ADDRESS, CUSTOMER NAME, BARCODE, PRODUCT NAME, QUANTITY)
 
-        # tk.Label(self.sp,text='USER').grid(row=0,column=0,sticky=tk.W+tk.N)
-        tk.Label(self.sp, text='DATE').grid(row=1, column=0, sticky=tk.W+tk.N)
+        # tk.Label(self.sp,text='USER').grid(
+        #   row=0, column=0, sticky=tk.W+tk.N)
+        tk.Label(self.sp, text='DATE').grid(
+            row=1, column=0, sticky=tk.W+tk.N)
         tk.Label(self.sp, text='PHONE NO').grid(
             row=1, column=3, sticky=tk.W+tk.N)
         tk.Label(self.sp, text='ADDRESS').grid(
@@ -195,7 +195,7 @@ class invoice(object):
 
         #ADD ENTRY FOR DATE WITH DATE AS OS.DATE
 
-        #-------------------------------------entry(date, phone_no, address, customer_name, barcode, product_name, quantity) all are StringVar
+        # ----------------------------------entry(date, phone_no, address, customer_name, barcode, product_name, quantity) all are StringVar
 
         '''
         important note. we have to bind
