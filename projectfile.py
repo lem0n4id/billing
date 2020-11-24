@@ -83,11 +83,11 @@ class stocks(object):
         tabcontrol = ttk.Notebook(self.mas)
         tab = ttk.Frame(tabcontrol)
         # ----------------------------------labelframes(invoice)
-        self.labelframe2 = tk.LabelFrame(tab, text="Update Stocks")
+        self.labelframe2 = tk.LabelFrame(tab, text="Add to Stocks")
         self.labelframe2.pack(side=tk.TOP, fill=tk.X)
 
         # ----------------------------------buttons(Add, Remove)
-        tk.Button(self.labelframe2, text='Update', command=self.update_button).grid(
+        tk.Button(self.labelframe2, text='Add', command=self.update_button).grid(
             row=3, column=1, sticky=tk.W+tk.N)
 
         # ----------------------------------labels(BARCODE, PRODUCT NAME, QUANTITY LEFT, MRP, RETAIL PRICE)
@@ -97,13 +97,10 @@ class stocks(object):
             row=1, column=0, sticky=tk.W+tk.N)
         tk.Label(self.labelframe2, text='PRODUCT NAME').grid(
             row=1, column=2, sticky=tk.W+tk.N)
-        tk.Label(self.labelframe2, text='QUANTITY LEFT').grid(
+        tk.Label(self.labelframe2, text='QUANTITY').grid(
             row=1, column=4, sticky=tk.W+tk.N)
         tk.Label(self.labelframe2, text='MRP').grid(
             row=2, column=0, sticky=tk.W+tk.N)
-        tk.Label(self.labelframe2, text='RETAIL PRICE').grid(
-            row=2, column=2, sticky=tk.W+tk.N)
-
         # ----------------------------------entry(BARCODE, PRODUCT NAME, QUANTITY LEFT, MRP, RETAIL PRICE) all are StringVar
 
         '''
@@ -158,24 +155,15 @@ class stocks(object):
         self.mrp.set('')
         self.Mrp.grid(row=2, column=1, sticky=tk.W+tk.N)
 
-        # ==============RETAIL PRICE===================
-        self.retail_price = tk.StringVar()
-
-        self.RetailPrice = tk.Entry(
-            self.labelframe2, textvariable=self.retail_price)
-        self.RetailPrice.bind("<Return>", self.retail_price_bind_function)
-        self.retail_price.set('')
-        self.RetailPrice.grid(row=2, column=3, sticky=tk.W+tk.N)
-
-        tabcontrol.add(tab,text='add stocks')
+        tabcontrol.add(tab,text='add stock purchase details')
         tabcontrol.pack(expand=1,fill="both")
 
         tab2 = ttk.Frame(tabcontrol)
 
         
-        # -----------------------------------treeview----------------------------
+        # -----------------------------------treeview(stock available)----------------------------
         invoice_list = ['Barcode', 'Product Name',
-                        'Quantity Left', 'MRP', 'Retail Price']
+                        'Quantity']
         listbar = tk.Frame(tab2)
 
         bary3 = tk.Scrollbar(listbar)
@@ -194,7 +182,7 @@ class stocks(object):
         self.invoiceList.pack(side=tk.LEFT, fill=tk.BOTH)
 
         self.invoiceList.insert('', 'end', values=(
-            '0000010', 'lifeboy soap', '86', '20', '18'))
+            '0000010', 'lifeboy soap', '86'))
 
         barx3.config(command=self.invoiceList.xview)
         bary3.config(command=self.invoiceList.yview)
@@ -207,6 +195,45 @@ class stocks(object):
 
         tabcontrol.add(tab2,text='stock available')
         tabcontrol.pack(expand=1,fill="both")
+
+        tab3 = ttk.Frame(tabcontrol)
+
+        
+        # -----------------------------------treeview(purchase history)----------------------------
+        invoice_list = ['date','Barcode', 'Product Name',
+                        'Quantity']
+        listbar = tk.Frame(tab3)
+
+        bary3 = tk.Scrollbar(listbar)
+        bary3.pack(side=tk.RIGHT, fill=tk.Y)
+        barx3 = tk.Scrollbar(listbar, orient=tk.HORIZONTAL)
+        barx3.pack(side=tk.BOTTOM, fill=tk.X)
+
+        self.invoiceList = ttk.Treeview(listbar, columns=invoice_list)
+        self.invoiceList.column(column='#0', width=0, stretch=False)
+        for i in range(len(invoice_list)):
+            self.invoiceList.heading(i, text=invoice_list[i])
+            self.invoiceList.column(i, width=100)
+        self.invoiceList.column(1, width=100)
+        self.invoiceList['height'] = 20
+        # self.invoiceList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
+        self.invoiceList.pack(side=tk.LEFT, fill=tk.BOTH)
+
+        self.invoiceList.insert('', 'end', values=('11/24/2020',
+            '0000010', 'lifeboy soap', '50'))
+
+        barx3.config(command=self.invoiceList.xview)
+        bary3.config(command=self.invoiceList.yview)
+
+        self.invoiceList.config(xscrollcommand=barx3.set,
+                                yscrollcommand=bary3.set)
+
+        listbar.pack(fill=tk.X)
+
+
+        tabcontrol.add(tab3,text='purchase history')
+        tabcontrol.pack(expand=1,fill="both")
+        
     
 
     def barcode_bind_function(self):
