@@ -77,103 +77,91 @@ class stocks(object):
     def __init__(self, master, user=''):
         self.user = user
         self.mas = tk.Toplevel(master)
-
+        tabcontrol = ttk.Notebook(self.mas)
+        Inventory = ttk.Frame(tabcontrol)
         # ----------------------------------labelframes(invoice)
-        self.labelframe2 = tk.LabelFrame(self.mas, text="stocks") #change name labelframe2
+        self.labelframe2 = tk.LabelFrame(Inventory, text="Update Stocks")
         self.labelframe2.pack(side=tk.TOP, fill=tk.X)
 
-        # ----------------------------------labels(BARCODE, PRODUCT NAME, MRP, RETAIL PRICE, QUANTITY LEFT)
+        # ----------------------------------buttons(Add, Remove)
+        tk.Button(self.labelframe2, text='Update', command=self.update_button).grid(
+            row=3, column=1, sticky=tk.W+tk.N)
+
+        # ----------------------------------labels(BARCODE, PRODUCT NAME, QUANTITY LEFT, MRP, RETAIL PRICE)
         tk.Label(self.labelframe2, text='BARCODE').grid(
             row=1, column=0, sticky=tk.W+tk.N)
         tk.Label(self.labelframe2, text='PRODUCT NAME').grid(
-            row=1, column=3, sticky=tk.W+tk.N)
-        tk.Label(self.labelframe2, text='MRP').grid(
-            row=1, column=5, sticky=tk.W+tk.N)
-        tk.Label(self.labelframe2, text='RETAIL PRICE').grid(
-            row=2, column=0, sticky=tk.W+tk.N)
+            row=1, column=2, sticky=tk.W+tk.N)
         tk.Label(self.labelframe2, text='QUANTITY LEFT').grid(
-            row=2, column=3, sticky=tk.W+tk.N)
+            row=1, column=4, sticky=tk.W+tk.N)
+        tk.Label(self.labelframe2, text='MRP').grid(
+            row=2, column=0, sticky=tk.W+tk.N)
+        tk.Label(self.labelframe2, text='RETAIL PRICE').grid(
+            row=2, column=2, sticky=tk.W+tk.N)
 
-        # ----------------------------------entry(BARCODE, PRODUCT NAME, MRP, RETAIL PRICE, QUANTITY LEFT) all are StringVar
+        # ----------------------------------entry(BARCODE, PRODUCT NAME, QUANTITY LEFT, MRP, RETAIL PRICE) all are StringVar
 
         '''
         important note. we have to bind
         before you pack or use grid to place the widgit
         '''
 
-        # ===============Date=======================
-        self.date = tk.StringVar()
-
-        # today's date
-        formatted_date = datetime.date.strftime(
-            datetime.date.today(), "%m/%d/%Y")
-
-        self.Date = tk.Entry(self.labelframe1, textvariable=self.date)
-        self.Date.bind("<Return>", self.Print1)
-        self.date.set(formatted_date)
-        self.Date.grid(row=1, column=1, sticky=tk.W+tk.N)
-
-        # ==============PHONE NO===================
-        self.phone_no = tk.StringVar()
-
-        self.PhoneNo = tk.Entry(self.labelframe1, textvariable=self.phone_no)
-        self.PhoneNo.bind("<Return>", self.phone_no_bind_function)
-        self.phone_no.set('')
-        self.PhoneNo.grid(row=1, column=4, sticky=tk.W+tk.N)
-
-        # ===============ADDRESS====================
-        self.address = tk.StringVar()
-
-        f1 = tk.Frame(self.labelframe1)
-        bary1 = tk.Scrollbar(f1)
-        bary1.pack(side=tk.RIGHT, fill=tk.Y)
-        self.Address = tk.Text(f1, width=27, height=1)
-        self.Address.bind("<Return>", self.address_bind_function)
-        self.address.set('')
-        self.Address.pack(side=tk.LEFT, fill=tk.BOTH)
-        bary1.config(command=self.Address.yview)
-        self.Address.config(yscrollcommand=bary1.set)
-        f1.grid(row=4, column=3, rowspan=2, columnspan=3, sticky=tk.W+tk.N)
-
-        # =====CUSTOMER NAME==============================
-        self.customer_name = tk.StringVar()
-
-        self.CustomerName = tk.Entry(self.labelframe1, textvariable=self.customer_name)
-        self.CustomerName.bind("<Return>", self.customer_name_bind_function)
-        self.customer_name.set('')
-        self.CustomerName.grid(row=2, column=4, sticky=tk.W+tk.N)
-
         # ==========BARCODE==========
 
         self.barcode = tk.StringVar()
 
-        self.BarCode = tk.Entry(self.labelframe1, textvariable=self.barcode)
+        self.BarCode = tk.Entry(self.labelframe2, textvariable=self.barcode)
         self.BarCode.bind("<Return>", self.barcode_bind_function)
         self.barcode.set('')
-        self.BarCode.grid(row=6, column=1, sticky=tk.W+tk.N)
+        self.BarCode.grid(row=1, column=1, sticky=tk.W+tk.N)
 
         # ==========PRODUCT NAME==========
 
         self.product_name = tk.StringVar()
 
-        self.ProductName = tk.Entry(self.labelframe1, textvariable=self.product_name)
+        self.ProductName = tk.Entry(
+            self.labelframe2, textvariable=self.product_name)
         self.ProductName.bind("<Return>", self.product_name_bind_function)
         self.product_name.set('')
-        self.ProductName.grid(row=6, column=4, sticky=tk.W+tk.N)
+        self.ProductName.grid(row=1, column=3, sticky=tk.W+tk.N)
 
         # ==========QUANTITY==========
 
         self.quantity = tk.StringVar()
 
-        self.Quantity = tk.Entry(self.labelframe1, textvariable=self.quantity)
+        self.Quantity = tk.Entry(self.labelframe2, textvariable=self.quantity)
         self.Quantity.bind("<Return>", self.quantity_bind_function)
         self.quantity.set('')
-        self.Quantity.grid(row=6, column=6, sticky=tk.W+tk.N)
+        self.Quantity.grid(row=1, column=5, sticky=tk.W+tk.N)
 
+        # ===============MRP=======================
+        self.mrp = tk.StringVar()
 
+        self.Mrp = tk.Entry(self.labelframe2, textvariable=self.mrp)
+        self.Mrp.bind("<Return>", self.mrp_name_bind_function)
+        self.mrp.set('')
+        self.Mrp.grid(row=2, column=1, sticky=tk.W+tk.N)
+
+        # ==============RETAIL PRICE===================
+        self.retail_price = tk.StringVar()
+
+        self.RetailPrice = tk.Entry(
+            self.labelframe2, textvariable=self.retail_price)
+        self.RetailPrice.bind("<Return>", self.retail_price_bind_function)
+        self.retail_price.set('')
+        self.RetailPrice.grid(row=2, column=3, sticky=tk.W+tk.N)
+
+        tabcontrol.add(Inventory,text='Inventory')
+        tabcontrol.pack(expand=1,fill="both")
+
+        tabcontrol1 = ttk.Notebook(self.mas)
+        Inventory1 = ttk.Frame(tabcontrol1)
+
+        
         # -----------------------------------treeview----------------------------
-        invoice_list = ['Code', 'Name', 'Quantity left', 'MRP', 'Price']
-        listbar = tk.Frame(self.mas)
+        invoice_list = ['Barcode', 'Product Name',
+                        'Quantity Left', 'MRP', 'Retail Price']
+        listbar = tk.Frame(Inventory1)
 
         bary3 = tk.Scrollbar(listbar)
         bary3.pack(side=tk.RIGHT, fill=tk.Y)
@@ -190,7 +178,8 @@ class stocks(object):
         # self.invoiceList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
         self.invoiceList.pack(side=tk.LEFT, fill=tk.BOTH)
 
-        self.invoiceList.insert('', 'end', values=('a', 'a', 'c', 'd', 'e'))
+        self.invoiceList.insert('', 'end', values=(
+            '0000010', 'lifeboy soap', '86', '20', '18'))
 
         barx3.config(command=self.invoiceList.xview)
         bary3.config(command=self.invoiceList.yview)
@@ -200,36 +189,33 @@ class stocks(object):
 
         listbar.pack(fill=tk.X)
 
-    def add_stock(self):
-        '''
-        a new dialog box will open to enter all the details
-        and then youll press okay button or cancel button if you dont want to.
-        this will update the the table in the database file
-        '''
+        tabcontrol1.add(Inventory1,text='Inventory1')
+        tabcontrol1.pack(expand=1,fill="both")
+    
+
+    def barcode_bind_function(self):
         pass
 
-    def edit_stock(self):
-        '''
-        a new dialog box will open to enter code or name and then 
-        this will open a new dialog box with labels and entries with the details 
-        inserted already and you get to edit the values
-        and then youll press okay button or cancel button if you dont want to.
-        this will update the the table in the database file 
-        '''
+    def product_name_bind_function(self):
         pass
 
-    def delete_stock(self):
-        '''
-        a new dialog box will open to enter code or name and then 
-        and then youll press okay button or cancel button if you dont want to.
-        this will update the the table in the database file
-        '''
-
+    def quantity_bind_function(self):
         pass
+
+    def mrp_name_bind_function(self):
+        pass
+
+    def retail_price_bind_function(self):
+        pass
+
+    def update_button(self):
+        pass
+
 
 
 class invoice(object):
     def __init__(self, master, user=''):
+        self.master = master
         self.user = user
         self.DATALIST = {}
 
@@ -244,8 +230,8 @@ class invoice(object):
         menubar.add_cascade(label='File', menu=filemenu)
 
         projmenu = tk.Menu(menubar, tearoff=0)
-        projmenu.add_command(label='Update Project List')
-        menubar.add_cascade(label='Project', menu=projmenu)
+        projmenu.add_command(label='Update Stocks', command=self.updatestocks)
+        menubar.add_cascade(label='Stocks', menu=projmenu)
 
         aboutmenu = tk.Menu(menubar, tearoff=0)
         aboutmenu.add_command(label='About Me')
@@ -253,7 +239,8 @@ class invoice(object):
 
         self.mas['menu'] = menubar
         # ----------------------------------labelframes(invoice)
-        self.labelframe1 = tk.LabelFrame(self.mas, text="invoice") #change name labelframe1
+        self.labelframe1 = tk.LabelFrame(
+            self.mas, text="invoice")  # change name labelframe1
         self.labelframe1.pack(side=tk.TOP, fill=tk.X)
 
         # ----------------------------------buttons(Add, Remove)
@@ -281,12 +268,12 @@ class invoice(object):
         tk.Label(self.labelframe1, text='QUANTITY').grid(
             row=6, column=5, sticky=tk.W+tk.N)
 
-        #=====USER NAME=====
+        # =====USER NAME=====
         #self.username = StringVar()
-        #self.username.set(self.user)
+        # self.username.set(self.user)
         #tk.Label(self.labelframe1, text=self.user).grid(row=0, column=1, sticky=W+N)
 
-        #ADD ENTRY FOR DATE WITH DATE AS OS.DATE
+        # ADD ENTRY FOR DATE WITH DATE AS OS.DATE
 
         # ----------------------------------entry(date, phone_no, address, customer_name, barcode, product_name, quantity) all are StringVar
 
@@ -332,7 +319,8 @@ class invoice(object):
         # =====CUSTOMER NAME==============================
         self.customer_name = tk.StringVar()
 
-        self.CustomerName = tk.Entry(self.labelframe1, textvariable=self.customer_name)
+        self.CustomerName = tk.Entry(
+            self.labelframe1, textvariable=self.customer_name)
         self.CustomerName.bind("<Return>", self.customer_name_bind_function)
         self.customer_name.set('')
         self.CustomerName.grid(row=2, column=4, sticky=tk.W+tk.N)
@@ -350,7 +338,8 @@ class invoice(object):
 
         self.product_name = tk.StringVar()
 
-        self.ProductName = tk.Entry(self.labelframe1, textvariable=self.product_name)
+        self.ProductName = tk.Entry(
+            self.labelframe1, textvariable=self.product_name)
         self.ProductName.bind("<Return>", self.product_name_bind_function)
         self.product_name.set('')
         self.ProductName.grid(row=6, column=4, sticky=tk.W+tk.N)
@@ -420,6 +409,9 @@ class invoice(object):
     def bill_remove(self):
         pass
 
+    def updatestocks(self):
+        self.stocks = stocks(self.master)
+
 
 if __name__ == '__main__':
 
@@ -428,7 +420,7 @@ if __name__ == '__main__':
 
     myLogin = loginPage(root)
 
-    #stock=stocks(root)
+    # stock=stocks(root)
 
     # root.wait_window(myLogin.mySendMail.labelframe1)
     tk.mainloop()
