@@ -10,6 +10,7 @@ class loginPage(object):
 
     def __init__(self, master, info='Invoice Management'):
         self.master = master
+        self.master.title('Login')
         self.mainlabel = tk.Label(master, text=info, justify=tk.CENTER)
         self.mainlabel.grid(row=0, columnspan=3)
 
@@ -77,10 +78,12 @@ class stocks(object):
     def __init__(self, master, user=''):
         self.user = user
         self.mas = tk.Toplevel(master)
+        self.mas.title('Stock Management')
+
         tabcontrol = ttk.Notebook(self.mas)
-        Inventory = ttk.Frame(tabcontrol)
+        tab = ttk.Frame(tabcontrol)
         # ----------------------------------labelframes(invoice)
-        self.labelframe2 = tk.LabelFrame(Inventory, text="Update Stocks")
+        self.labelframe2 = tk.LabelFrame(tab, text="Update Stocks")
         self.labelframe2.pack(side=tk.TOP, fill=tk.X)
 
         # ----------------------------------buttons(Add, Remove)
@@ -88,6 +91,8 @@ class stocks(object):
             row=3, column=1, sticky=tk.W+tk.N)
 
         # ----------------------------------labels(BARCODE, PRODUCT NAME, QUANTITY LEFT, MRP, RETAIL PRICE)
+        tk.Label(self.labelframe2, text='DATE').grid(
+            row=0, column=0, sticky=tk.W+tk.N)
         tk.Label(self.labelframe2, text='BARCODE').grid(
             row=1, column=0, sticky=tk.W+tk.N)
         tk.Label(self.labelframe2, text='PRODUCT NAME').grid(
@@ -105,6 +110,17 @@ class stocks(object):
         important note. we have to bind
         before you pack or use grid to place the widgit
         '''
+        # ===============Date=======================
+        self.date = tk.StringVar()
+
+        # today's date
+        formatted_date = datetime.date.strftime(
+            datetime.date.today(), "%m/%d/%Y")
+
+        self.Date = tk.Entry(self.labelframe2, textvariable=self.date)
+        #self.Date.bind("<Return>", self.Print1)
+        self.date.set(formatted_date)
+        self.Date.grid(row=0, column=1, sticky=tk.W+tk.N)
 
         # ==========BARCODE==========
 
@@ -151,17 +167,16 @@ class stocks(object):
         self.retail_price.set('')
         self.RetailPrice.grid(row=2, column=3, sticky=tk.W+tk.N)
 
-        tabcontrol.add(Inventory,text='Inventory')
+        tabcontrol.add(tab,text='add stocks')
         tabcontrol.pack(expand=1,fill="both")
 
-        tabcontrol1 = ttk.Notebook(self.mas)
-        Inventory1 = ttk.Frame(tabcontrol1)
+        tab2 = ttk.Frame(tabcontrol)
 
         
         # -----------------------------------treeview----------------------------
         invoice_list = ['Barcode', 'Product Name',
                         'Quantity Left', 'MRP', 'Retail Price']
-        listbar = tk.Frame(Inventory1)
+        listbar = tk.Frame(tab2)
 
         bary3 = tk.Scrollbar(listbar)
         bary3.pack(side=tk.RIGHT, fill=tk.Y)
@@ -189,8 +204,9 @@ class stocks(object):
 
         listbar.pack(fill=tk.X)
 
-        tabcontrol1.add(Inventory1,text='Inventory1')
-        tabcontrol1.pack(expand=1,fill="both")
+
+        tabcontrol.add(tab2,text='stock available')
+        tabcontrol.pack(expand=1,fill="both")
     
 
     def barcode_bind_function(self):
@@ -220,6 +236,7 @@ class invoice(object):
         self.DATALIST = {}
 
         self.mas = tk.Toplevel(master)
+        self.mas.title('Billing')
         # ----------------------------------menubar(File[Add Invoice, Delete Invoice, Exit], Project[Update Project List], About[About Me])
         menubar = tk.Menu(self.mas)
         filemenu = tk.Menu(menubar, tearoff=0)
