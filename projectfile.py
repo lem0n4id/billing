@@ -66,11 +66,10 @@ class loginPage(object):
                 self.userEntry.focus_set()
                 return
 
-        self.connect()
+        self.connect(self.username)
 
-    def connect(self):
-        self.username = (self.userEntry.get().strip()).upper()
-        self.invoice = invoice(self.master, self.username)
+    def connect(self,username):
+        self.invoice = invoice(self.master, user=self.username)
         #self.stock = stocks(self.master, self.username)
 
 
@@ -155,12 +154,11 @@ class stocks(object):
         self.mrp.set('')
         self.Mrp.grid(row=2, column=1, sticky=tk.W+tk.N)
 
-        tabcontrol.add(tab,text='add stock purchase details')
-        tabcontrol.pack(expand=1,fill="both")
+        tabcontrol.add(tab, text='add stock purchase details')
+        tabcontrol.pack(expand=1, fill="both")
 
         tab2 = ttk.Frame(tabcontrol)
 
-        
         # -----------------------------------treeview(stock available)----------------------------
         invoice_list = ['Barcode', 'Product Name',
                         'Quantity']
@@ -192,15 +190,13 @@ class stocks(object):
 
         listbar.pack(fill=tk.X)
 
-
-        tabcontrol.add(tab2,text='stock available')
-        tabcontrol.pack(expand=1,fill="both")
+        tabcontrol.add(tab2, text='stock available')
+        tabcontrol.pack(expand=1, fill="both")
 
         tab3 = ttk.Frame(tabcontrol)
 
-        
         # -----------------------------------treeview(purchase history)----------------------------
-        invoice_list = ['date','Barcode', 'Product Name',
+        invoice_list = ['date', 'Barcode', 'Product Name',
                         'Quantity']
         listbar = tk.Frame(tab3)
 
@@ -220,7 +216,7 @@ class stocks(object):
         self.invoiceList.pack(side=tk.LEFT, fill=tk.BOTH)
 
         self.invoiceList.insert('', 'end', values=('11/24/2020',
-            '0000010', 'lifeboy soap', '50'))
+                                                   '0000010', 'lifeboy soap', '50'))
 
         barx3.config(command=self.invoiceList.xview)
         bary3.config(command=self.invoiceList.yview)
@@ -230,11 +226,8 @@ class stocks(object):
 
         listbar.pack(fill=tk.X)
 
-
-        tabcontrol.add(tab3,text='purchase history')
-        tabcontrol.pack(expand=1,fill="both")
-        
-    
+        tabcontrol.add(tab3, text='purchase history')
+        tabcontrol.pack(expand=1, fill="both")
 
     def barcode_bind_function(self):
         pass
@@ -253,7 +246,6 @@ class stocks(object):
 
     def update_button(self):
         pass
-
 
 
 class invoice(object):
@@ -282,21 +274,41 @@ class invoice(object):
         menubar.add_cascade(label='About', menu=aboutmenu)
 
         self.mas['menu'] = menubar
-        # ----------------------------------labelframes(invoice)
+        # ----------------------------------labelframes
+
+        self.labelframeN = tk.LabelFrame(
+            self.mas, text="Employyee details")  # change name labelframeN
+        self.labelframeN.pack(side=tk.TOP, fill=tk.X)
         self.labelframe1 = tk.LabelFrame(
             self.mas, text="invoice")  # change name labelframe1
         self.labelframe1.pack(side=tk.TOP, fill=tk.X)
 
-        # ----------------------------------buttons(Add, Remove)
+        # ----------------------------------buttons in Employyee details(logout)
+
+        tk.Button(self.labelframeN, text='logout', command=self.mas.quit).grid(
+            row=1, column=0, sticky=tk.W+tk.N)
+
+        # ----------------------------------buttons in invoice(Add, Remove)
+
+        tk.Button(self.labelframeN, text='logout', command=self.mas.quit).grid(
+            row=1, column=0, sticky=tk.W+tk.N)
         tk.Button(self.labelframe1, text='Add', command=self.bill_add).grid(
             row=6, column=7, sticky=tk.W+tk.N)
         tk.Button(self.labelframe1, text='Remove', command=self.bill_remove).grid(
             row=6, column=8, sticky=tk.W+tk.N)
 
-        # ----------------------------------labels(DATE, PHONE NO, ADDRESS, CUSTOMER NAME, BARCODE, PRODUCT NAME, QUANTITY)
+        # ----------------------------------labels in Employyee details(USER)
 
-        # tk.Label(self.labelframe1,text='USER').grid(
-        #   row=0, column=0, sticky=tk.W+tk.N)
+        tk.Label(self.labelframeN, text='User: ').grid(
+            row=0, column=0, sticky=tk.W+tk.N)
+
+        self.username = tk.StringVar()
+        self.username.set(self.user)
+        tk.Label(self.labelframeN, text=user).grid(
+            row=0, column=1, sticky=tk.W+tk.N)
+
+        # ----------------------------------labels in invoice(DATE, PHONE NO, ADDRESS, CUSTOMER NAME, BARCODE, PRODUCT NAME, QUANTITY)
+
         tk.Label(self.labelframe1, text='DATE').grid(
             row=1, column=0, sticky=tk.W+tk.N)
         tk.Label(self.labelframe1, text='PHONE NO').grid(
@@ -311,11 +323,6 @@ class invoice(object):
             row=6, column=3, sticky=tk.W+tk.N)
         tk.Label(self.labelframe1, text='QUANTITY').grid(
             row=6, column=5, sticky=tk.W+tk.N)
-
-        # =====USER NAME=====
-        #self.username = StringVar()
-        # self.username.set(self.user)
-        #tk.Label(self.labelframe1, text=self.user).grid(row=0, column=1, sticky=W+N)
 
         # ADD ENTRY FOR DATE WITH DATE AS OS.DATE
 
