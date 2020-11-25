@@ -78,6 +78,9 @@ class loginPage(object):
 
 
 class stocks(object):
+    '''
+    retail price=wholesale price/(1-markup percentage[in decimal]) *markup percentage=profit margin
+    '''
     def __init__(self, master, user=''):
         self.user = user
         self.mas = tk.Toplevel(master)
@@ -93,10 +96,10 @@ class stocks(object):
         tk.Button(self.labelframe2, text='Add', command=self.add_button).grid(
             row=3, column=1, sticky=tk.W+tk.N)
 
-        # ----------------------------------labels(BARCODE, PRODUCT NAME, QUANTITY LEFT, MRP, RETAIL PRICE)
+        # ----------------------------------labels(PRODUCT CODE , PRODUCT NAME, QUANTITY LEFT, MRP, RETAIL PRICE)
         tk.Label(self.labelframe2, text='DATE').grid(
             row=0, column=0, sticky=tk.W+tk.N)
-        tk.Label(self.labelframe2, text='BARCODE').grid(
+        tk.Label(self.labelframe2, text='PRODUCT CODE ').grid(
             row=1, column=0, sticky=tk.W+tk.N)
         tk.Label(self.labelframe2, text='PRODUCT NAME').grid(
             row=1, column=2, sticky=tk.W+tk.N)
@@ -104,7 +107,7 @@ class stocks(object):
             row=1, column=4, sticky=tk.W+tk.N)
         tk.Label(self.labelframe2, text='MRP').grid(
             row=2, column=0, sticky=tk.W+tk.N)
-        # ----------------------------------entry(BARCODE, PRODUCT NAME, QUANTITY LEFT, MRP, RETAIL PRICE) all are StringVar
+        # ----------------------------------entry(PRODUCT CODE, PRODUCT NAME, QUANTITY LEFT, MRP, RETAIL PRICE) all are StringVar
 
         '''
         important note. we have to bind
@@ -122,12 +125,12 @@ class stocks(object):
         self.date.set(formatted_date)
         self.Date.grid(row=0, column=1, sticky=tk.W+tk.N)
 
-        self.barcode = tk.StringVar()
+        self.productcode = tk.StringVar()
 
-        self.BarCode = tk.Entry(self.labelframe2, textvariable=self.barcode)
-        self.BarCode.bind("<Return>", self.barcode_bind_function)
-        self.barcode.set('')
-        self.BarCode.grid(row=1, column=1, sticky=tk.W+tk.N)
+        self.ProductCode = tk.Entry(self.labelframe2, textvariable=self.productcode)
+        self.ProductCode.bind("<Return>", self.barcode_bind_function)
+        self.productcode.set('')
+        self.ProductCode.grid(row=1, column=1, sticky=tk.W+tk.N)
 
         self.product_name = tk.StringVar()
 
@@ -157,7 +160,7 @@ class stocks(object):
         tab2 = ttk.Frame(tabcontrol)
 
         # -----------------------------------treeview(stock available)----------------------------
-        invoice_list = ['Barcode', 'Product Name',
+        invoice_list = ['Product Code', 'Product Name',
                         'Quantity']
         listbar = tk.Frame(tab2)
 
@@ -193,7 +196,7 @@ class stocks(object):
         tab3 = ttk.Frame(tabcontrol)
 
         # -----------------------------------treeview(purchase history)----------------------------
-        invoice_list = ['date', 'Barcode', 'Product Name',
+        invoice_list = ['date', 'Product Code', 'Product Name',
                         'Quantity']
         listbar = tk.Frame(tab3)
 
@@ -225,6 +228,10 @@ class stocks(object):
 
         tabcontrol.add(tab3, text='purchase history')
         tabcontrol.pack(expand=1, fill="both")
+        self.BarCode_focus()
+    #focus
+    def BarCode_focus(self):
+        self.ProductCode.focus_set()
 
     def barcode_bind_function(self, event):
         pass
@@ -238,7 +245,7 @@ class stocks(object):
     def mrp_name_bind_function(self, event):
         pass
 
-    def add_button(self, event):
+    def add_button(self):
         pass
 
 
@@ -307,17 +314,17 @@ class invoice(object):
         tk.Button(self.labelframe1, text='Remove', command=self.bill_remove).grid(
             row=1, column=1, sticky=tk.W+tk.N)
 
-        # ----------------------------------labels in invoice(BARCODE, PRODUCT NAME, QUANTITY)
+        # ----------------------------------labels in invoice(PRODUCT CODE , PRODUCT NAME, QUANTITY)
 
 
-        tk.Label(self.labelframe1, text='BARCODE').grid(
+        tk.Label(self.labelframe1, text='PRODUCT CODE ').grid(
             row=0, column=0, sticky=tk.W+tk.N)
         tk.Label(self.labelframe1, text='PRODUCT NAME').grid(
             row=0, column=3, sticky=tk.W+tk.N)
         tk.Label(self.labelframe1, text='QUANTITY').grid(
             row=0, column=5, sticky=tk.W+tk.N)
 
-        # ----------------------------------entries in invoice(barcode, product_name, quantity) all are StringVar
+        # ----------------------------------entries in invoice(productcode, product_name, quantity) all are StringVar
 
         '''
         important note- we have to bind
@@ -325,12 +332,12 @@ class invoice(object):
         '''
 
 
-        self.barcode = tk.StringVar()
+        self.productcode = tk.StringVar()
 
-        self.BarCode = tk.Entry(self.labelframe1, textvariable=self.barcode)
-        self.BarCode.bind("<Return>", self.barcode_bind_function)
-        self.barcode.set('')
-        self.BarCode.grid(row=0, column=1, sticky=tk.W+tk.N)
+        self.ProductCode = tk.Entry(self.labelframe1, textvariable=self.productcode)
+        self.ProductCode.bind("<Return>", self.barcode_bind_function)
+        self.productcode.set('')
+        self.ProductCode.grid(row=0, column=1, sticky=tk.W+tk.N)
 
         self.product_name = tk.StringVar()
 
@@ -347,18 +354,25 @@ class invoice(object):
         self.quantity.set('')
         self.Quantity.grid(row=0, column=6, sticky=tk.W+tk.N)
 
+        # ----------------------------------buttons in customer details(okay, clear)
+        tk.Button(self.labelframeN1, text='Okay', command=self.enter_customer_details).grid(
+            row=1, column=0, sticky=tk.W+tk.N)
+        tk.Button(self.labelframeN1, text='Clear', command=self.clear_customer_details).grid(
+            row=1, column=1, sticky=tk.W+tk.N)
+        
+        
         # ----------------------------------labels in customer details(PHONE NO, ADDRESS, CUSTOMER NAME)
 
         tk.Label(self.labelframeN1, text='PHONE NO').grid(
             row=0, column=0, sticky=tk.W+tk.N)
         tk.Label(self.labelframeN1, text='CUSTOMER NAME').grid(
-            row=1, column=0, sticky=tk.W+tk.N)
-        tk.Label(self.labelframeN1, text='ADDRESS').grid(
             row=2, column=0, sticky=tk.W+tk.N)
+        tk.Label(self.labelframeN1, text='ADDRESS').grid(
+            row=3, column=0, sticky=tk.W+tk.N)
         tk.Label(self.labelframeN1, text='Customer type:').grid(
             row=0, column=2, sticky=tk.W+tk.N)
 
-        # ----------------------------------entries in customer details(phone_no, address, customer_name)
+        # ----------------------------------entries in customer details(phone_no, customer_name, address, customer_type)
 
         self.phone_no = tk.StringVar()
 
@@ -373,7 +387,7 @@ class invoice(object):
             self.labelframeN1, textvariable=self.customer_name)
         self.CustomerName.bind("<Return>", self.customer_name_bind_function)
         self.customer_name.set('')
-        self.CustomerName.grid(row=1, column=1, sticky=tk.W+tk.N)
+        self.CustomerName.grid(row=2, column=1, sticky=tk.W+tk.N)
 
         self.address = tk.StringVar()
 
@@ -386,10 +400,17 @@ class invoice(object):
         self.Address.pack(side=tk.LEFT, fill=tk.BOTH)
         bary1.config(command=self.Address.yview)
         self.Address.config(yscrollcommand=bary1.set)
-        f1.grid(row=2, column=1, rowspan=3, columnspan=3, sticky=tk.W+tk.N)
+        f1.grid(row=3, column=1, rowspan=3, columnspan=3, sticky=tk.W+tk.N)
+
+        self.customer_type = tk.StringVar()
+
+        self.CustomerType = tk.Entry(
+            self.labelframeN1, textvariable=self.customer_type)
+        self.customer_type.set('N/A')
+        self.CustomerType.grid(row=0, column=3, sticky=tk.W+tk.N)
 
         # -----------------------------------treeview----------------------------
-        invoice_list = ['Sr no', 'Barcode', 'Product Name',
+        invoice_list = ['Sr no', 'Product Code', 'Product Name',
                         'MRP', 'Price', 'Quantity', 'Total']
         listbar = tk.Frame(self.mas)
 
@@ -416,19 +437,15 @@ class invoice(object):
 
         listbar.pack(fill=tk.X)
 
-    def Print1(self, event, *args):
-        print('date:', self.Date.get())
-        self.Date.delete(0, tk.END)
-
-    def phone_no_bind_function(self, event):
-        pass
-
-    def customer_name_bind_function(self, event):
-        pass
-
-    def address_bind_function(self, event):
-        pass
-
+        self.PhoneNo_focus()
+    #focus
+    def PhoneNo_focus(self):
+        self.PhoneNo.focus_set()
+    #menubar
+    def stocks_window(self):
+        self.stocks = stocks(self.master)
+    
+    #invoice
     def barcode_bind_function(self, event):
         pass
 
@@ -438,14 +455,36 @@ class invoice(object):
     def quantity_bind_function(self, event):
         pass
 
-    def bill_add(self, event):
+    def bill_add(self):
         pass
 
-    def bill_remove(self, event):
+    def bill_remove(self):
         pass
 
-    def stocks_window(self, event):
-        self.stocks = stocks(self.master)
+    #customer details
+    def phone_no_bind_function(self, event):
+        pass
+
+    def customer_name_bind_function(self, event):
+        pass
+
+    def address_bind_function(self, event):
+        pass
+    
+    def enter_customer_details(self):
+        #phone_no_bind_function(self)
+        pass
+        
+    def clear_customer_details(self):
+        self.PhoneNo.delete(0, tk.END)
+        self.CustomerName.delete(0, tk.END)
+        self.Address.delete('1.0', tk.END)
+        self.CustomerType.delete(0, tk.END)
+
+        self.phone_no.set('')
+        self.customer_name.set('')
+        self.address.set('')
+        self.customer_type.set('N/A')
 
 
 if __name__ == '__main__':
