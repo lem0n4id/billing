@@ -5,6 +5,14 @@ import tkinter.messagebox as tkMessageBox
 import tkinter.ttk as ttk
 from smtplib import *
 
+'''
+there will be a common login window where both a manager and a cashier can log in.
+cashier does the billing at the counter.
+manager managers the stock and has the control over the customer data and analysing the sales data to
+ see which products do good sale, at what time the customers usually come, etc etc,basically customer data
+ also sets the sales price of goods
+'''
+
 
 class loginPage(object):
 
@@ -57,6 +65,8 @@ class loginPage(object):
         self.clear()
 
         attn = ['user1', 'user2']  # username/usernames
+        managers = ['user1']
+        cashiers = ['user2']
         if len(self.username) == 0 or len(self.passwd) == 0 or not self.username in attn:
             tkMessageBox.showinfo('Notice', 'please check your username')
             self.clear()
@@ -69,24 +79,89 @@ class loginPage(object):
                 self.clear()
                 self.userEntry.focus_set()
                 return
+            else:
+                if self.username in managers:
+                    self.connect_manager(self.username)
+                elif self.username in cashiers:
+                    self.connect_cashier(self.username)
 
-        self.connect(self.username)
-
-    def connect(self, username):
+    def connect_cashier(self, username):
         self.invoice = invoice(self.master, user=self.username)
-        #self.stock = stocks(self.master, self.username)
+
+    def connect_manager(self, username):
+        self.stock = stocks(self.master, user=self.username)
 
 
 class stocks(object):
     '''
     retail price=wholesale price/(1-markup percentage[in decimal]) *markup percentage=profit margin
     '''
+
     def __init__(self, master, user=''):
         self.user = user
         self.mas = tk.Toplevel(master)
         self.mas.title('Stock Management')
 
+        # ----------------------------------menubar(File[Exit], Stocks[View Stocks],Customer Details[View Customer Purchase History], About[About Me])
+        menubar = tk.Menu(self.mas)
+        filemenu = tk.Menu(menubar, tearoff=0)
+        filemenu.add_command(label='Exit', command=master.quit)
+        menubar.add_cascade(label='File', menu=filemenu)
+        '''
+        stocksmenu = tk.Menu(menubar, tearoff=0)
+        stocksmenu.add_command(label='View Stocks', command=self.stocks_window)
+        menubar.add_cascade(label='Stocks', menu=stocksmenu)
+        
+        custdetlmenu = tk.Menu(menubar, tearoff=0)
+        custdetlmenu.add_command(label='View Customer Purchase History')
+        menubar.add_cascade(label='Customer Details', menu=custdetlmenu)
+        '''
+        aboutmenu = tk.Menu(menubar, tearoff=0)
+        aboutmenu.add_command(label='About Me')
+        menubar.add_cascade(label='About', menu=aboutmenu)
+
+        self.mas['menu'] = menubar
+
         tabcontrol = ttk.Notebook(self.mas)
+
+        tab2 = ttk.Frame(tabcontrol)
+
+        # -----------------------------------treeview(stock available)----------------------------
+        invoice_list = ['Product Code', 'Product Name',
+                        'Quantity']
+        listbar = tk.Frame(tab2)
+
+        bary3 = tk.Scrollbar(listbar)
+        bary3.pack(side=tk.RIGHT, fill=tk.Y)
+        barx3 = tk.Scrollbar(listbar, orient=tk.HORIZONTAL)
+        barx3.pack(side=tk.BOTTOM, fill=tk.X)
+
+        self.invoiceList = ttk.Treeview(listbar, columns=invoice_list)
+        self.invoiceList.column(column='#0', width=0, stretch=False)
+        for i in range(len(invoice_list)):
+            self.invoiceList.heading(i, text=invoice_list[i])
+            self.invoiceList.column(i, width=100)
+        self.invoiceList.column(1, width=100)
+        self.invoiceList['height'] = 20
+        # self.invoiceList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
+        self.invoiceList.pack(side=tk.LEFT, fill=tk.BOTH)
+
+        self.invoiceList.insert('', 'end', values=(
+            '0000010', 'lifeboy soap', '86'))
+
+        barx3.config(command=self.invoiceList.xview)
+        bary3.config(command=self.invoiceList.yview)
+
+        self.invoiceList.config(xscrollcommand=barx3.set,
+                                yscrollcommand=bary3.set)
+
+        listbar.pack(fill=tk.X)
+
+        tabcontrol.add(tab2, text='stock available')
+        tabcontrol.pack(expand=1, fill="both")
+
+        tab3 = ttk.Frame(tabcontrol)
+
         tab = ttk.Frame(tabcontrol)
         # ----------------------------------labelframes(invoice)
         self.labelframe2 = tk.LabelFrame(tab, text="Add to Stocks")
@@ -127,7 +202,8 @@ class stocks(object):
 
         self.productcode = tk.StringVar()
 
-        self.ProductCode = tk.Entry(self.labelframe2, textvariable=self.productcode)
+        self.ProductCode = tk.Entry(
+            self.labelframe2, textvariable=self.productcode)
         self.ProductCode.bind("<Return>", self.barcode_bind_function)
         self.productcode.set('')
         self.ProductCode.grid(row=1, column=1, sticky=tk.W+tk.N)
@@ -156,44 +232,6 @@ class stocks(object):
 
         tabcontrol.add(tab, text='add stock purchase details')
         tabcontrol.pack(expand=1, fill="both")
-
-        tab2 = ttk.Frame(tabcontrol)
-
-        # -----------------------------------treeview(stock available)----------------------------
-        invoice_list = ['Product Code', 'Product Name',
-                        'Quantity']
-        listbar = tk.Frame(tab2)
-
-        bary3 = tk.Scrollbar(listbar)
-        bary3.pack(side=tk.RIGHT, fill=tk.Y)
-        barx3 = tk.Scrollbar(listbar, orient=tk.HORIZONTAL)
-        barx3.pack(side=tk.BOTTOM, fill=tk.X)
-
-        self.invoiceList = ttk.Treeview(listbar, columns=invoice_list)
-        self.invoiceList.column(column='#0', width=0, stretch=False)
-        for i in range(len(invoice_list)):
-            self.invoiceList.heading(i, text=invoice_list[i])
-            self.invoiceList.column(i, width=100)
-        self.invoiceList.column(1, width=100)
-        self.invoiceList['height'] = 20
-        # self.invoiceList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
-        self.invoiceList.pack(side=tk.LEFT, fill=tk.BOTH)
-
-        self.invoiceList.insert('', 'end', values=(
-            '0000010', 'lifeboy soap', '86'))
-
-        barx3.config(command=self.invoiceList.xview)
-        bary3.config(command=self.invoiceList.yview)
-
-        self.invoiceList.config(xscrollcommand=barx3.set,
-                                yscrollcommand=bary3.set)
-
-        listbar.pack(fill=tk.X)
-
-        tabcontrol.add(tab2, text='stock available')
-        tabcontrol.pack(expand=1, fill="both")
-
-        tab3 = ttk.Frame(tabcontrol)
 
         # -----------------------------------treeview(purchase history)----------------------------
         invoice_list = ['date', 'Product Code', 'Product Name',
@@ -229,7 +267,8 @@ class stocks(object):
         tabcontrol.add(tab3, text='purchase history')
         tabcontrol.pack(expand=1, fill="both")
         self.BarCode_focus()
-    #focus
+    # focus
+
     def BarCode_focus(self):
         self.ProductCode.focus_set()
 
@@ -262,15 +301,15 @@ class invoice(object):
         filemenu = tk.Menu(menubar, tearoff=0)
         filemenu.add_command(label='Exit', command=master.quit)
         menubar.add_cascade(label='File', menu=filemenu)
-
+        '''
         stocksmenu = tk.Menu(menubar, tearoff=0)
         stocksmenu.add_command(label='View Stocks', command=self.stocks_window)
         menubar.add_cascade(label='Stocks', menu=stocksmenu)
-
+        
         custdetlmenu = tk.Menu(menubar, tearoff=0)
         custdetlmenu.add_command(label='View Customer Purchase History')
         menubar.add_cascade(label='Customer Details', menu=custdetlmenu)
-
+        '''
         aboutmenu = tk.Menu(menubar, tearoff=0)
         aboutmenu.add_command(label='About Me')
         menubar.add_cascade(label='About', menu=aboutmenu)
@@ -316,7 +355,6 @@ class invoice(object):
 
         # ----------------------------------labels in invoice(PRODUCT CODE , PRODUCT NAME, QUANTITY)
 
-
         tk.Label(self.labelframe1, text='PRODUCT CODE ').grid(
             row=0, column=0, sticky=tk.W+tk.N)
         tk.Label(self.labelframe1, text='PRODUCT NAME').grid(
@@ -331,10 +369,10 @@ class invoice(object):
         before you pack or use grid to place the widgit
         '''
 
-
         self.productcode = tk.StringVar()
 
-        self.ProductCode = tk.Entry(self.labelframe1, textvariable=self.productcode)
+        self.ProductCode = tk.Entry(
+            self.labelframe1, textvariable=self.productcode)
         self.ProductCode.bind("<Return>", self.barcode_bind_function)
         self.productcode.set('')
         self.ProductCode.grid(row=0, column=1, sticky=tk.W+tk.N)
@@ -359,8 +397,7 @@ class invoice(object):
             row=1, column=0, sticky=tk.W+tk.N)
         tk.Button(self.labelframeN1, text='Clear', command=self.clear_customer_details).grid(
             row=1, column=1, sticky=tk.W+tk.N)
-        
-        
+
         # ----------------------------------labels in customer details(PHONE NO, ADDRESS, CUSTOMER NAME)
 
         tk.Label(self.labelframeN1, text='PHONE NO').grid(
@@ -438,14 +475,16 @@ class invoice(object):
         listbar.pack(fill=tk.X)
 
         self.PhoneNo_focus()
-    #focus
+    # focus
+
     def PhoneNo_focus(self):
         self.PhoneNo.focus_set()
-    #menubar
+    # menubar
+
     def stocks_window(self):
         self.stocks = stocks(self.master)
-    
-    #invoice
+
+    # invoice
     def barcode_bind_function(self, event):
         pass
 
@@ -461,7 +500,7 @@ class invoice(object):
     def bill_remove(self):
         pass
 
-    #customer details
+    # customer details
     def phone_no_bind_function(self, event):
         pass
 
@@ -470,11 +509,11 @@ class invoice(object):
 
     def address_bind_function(self, event):
         pass
-    
+
     def enter_customer_details(self):
-        #phone_no_bind_function(self)
+        # phone_no_bind_function(self)
         pass
-        
+
     def clear_customer_details(self):
         self.PhoneNo.delete(0, tk.END)
         self.CustomerName.delete(0, tk.END)
