@@ -14,24 +14,12 @@ class invoice(object):
 
         self.mas = tk.Toplevel(master)
         self.mas.title('Billing')
-        # ----------------------------------menubar(File[Exit], Stocks[View Stocks],Customer Details[View Customer Purchase History], About[About Me])
+        # ----------------------------------menubar(File[Exit], , About[About Me])
         menubar = tk.Menu(self.mas)
         filemenu = tk.Menu(menubar, tearoff=0)
         filemenu.add_command(label='Exit', command=master.quit)
         menubar.add_cascade(label='File', menu=filemenu)
-        '''
-        stocksmenu = tk.Menu(menubar, tearoff=0)
-        stocksmenu.add_command(label='View Stocks', command=self.stocks_window)
-        menubar.add_cascade(label='Stocks', menu=stocksmenu)
         
-        custdetlmenu = tk.Menu(menubar, tearoff=0)
-        custdetlmenu.add_command(label='View Customer Purchase History')
-        menubar.add_cascade(label='Customer Details', menu=custdetlmenu)
-        '''
-        aboutmenu = tk.Menu(menubar, tearoff=0)
-        aboutmenu.add_command(label='About Me')
-        menubar.add_cascade(label='About', menu=aboutmenu)
-
         self.mas['menu'] = menubar
         # ----------------------------------labelframes
 
@@ -52,7 +40,7 @@ class invoice(object):
         # ----------------------------------buttons in Employyee details(logout)
 
         tk.Button(self.labelframeN, text='logout', command=self.mas.quit).grid(
-            row=1, column=0, sticky=tk.W+tk.N)
+            row=2, column=0, sticky=tk.W+tk.N)
 
         # ----------------------------------labels in Employyee details(User)
 
@@ -63,6 +51,9 @@ class invoice(object):
         # self.username.set(self.user)
         tk.Label(self.labelframeN, text=user).grid(
             row=0, column=1, sticky=tk.W+tk.N)
+        
+        tk.Label(self.labelframeN, text='Name: ').grid(
+            row=1, column=0, sticky=tk.W+tk.N)
 
         # ----------------------------------buttons in invoice(Add, Remove)
 
@@ -112,19 +103,19 @@ class invoice(object):
 
         # ----------------------------------buttons in customer details(okay, clear)
         tk.Button(self.labelframeN1, text='Okay', command=self.enter_customer_details).grid(
-            row=1, column=0, sticky=tk.W+tk.N)
+            row=4, column=0, sticky=tk.W+tk.N)
         tk.Button(self.labelframeN1, text='Clear', command=self.clear_customer_details).grid(
-            row=1, column=1, sticky=tk.W+tk.N)
+            row=4, column=1, sticky=tk.W+tk.N)
 
         # ----------------------------------labels in customer details(PHONE NO, ADDRESS, CUSTOMER NAME)
 
-        tk.Label(self.labelframeN1, text='PHONE NO').grid(
+        tk.Label(self.labelframeN1, text='Phone No').grid(
             row=0, column=0, sticky=tk.W+tk.N)
-        tk.Label(self.labelframeN1, text='CUSTOMER NAME').grid(
+        tk.Label(self.labelframeN1, text='Customer Name').grid(
             row=2, column=0, sticky=tk.W+tk.N)
-        tk.Label(self.labelframeN1, text='ADDRESS').grid(
+        tk.Label(self.labelframeN1, text='Email Address').grid(
             row=3, column=0, sticky=tk.W+tk.N)
-        tk.Label(self.labelframeN1, text='Customer type:').grid(
+        tk.Label(self.labelframeN1, text='Membership id:').grid(
             row=0, column=2, sticky=tk.W+tk.N)
 
         # ----------------------------------entries in customer details(phone_no, customer_name, address, customer_type)
@@ -144,18 +135,14 @@ class invoice(object):
         self.customer_name.set('')
         self.CustomerName.grid(row=2, column=1, sticky=tk.W+tk.N)
 
-        self.address = tk.StringVar()
+        self.email_address = tk.StringVar()
 
-        f1 = tk.Frame(self.labelframeN1)
-        bary1 = tk.Scrollbar(f1)
-        bary1.pack(side=tk.RIGHT, fill=tk.Y)
-        self.Address = tk.Text(f1, width=27, height=1)
-        self.Address.bind("<Return>", self.address_bind_function)
-        self.address.set('')
-        self.Address.pack(side=tk.LEFT, fill=tk.BOTH)
-        bary1.config(command=self.Address.yview)
-        self.Address.config(yscrollcommand=bary1.set)
-        f1.grid(row=3, column=1, rowspan=3, columnspan=3, sticky=tk.W+tk.N)
+        self.EmailAddress = tk.Entry(
+            self.labelframeN1, textvariable=self.email_address)
+        self.EmailAddress.bind("<Return>", self.email_address_bind_function)
+        self.email_address.set('')
+        self.EmailAddress.grid(row=3, column=1, sticky=tk.W+tk.N)
+
 
         self.customer_type = tk.StringVar()
 
@@ -197,10 +184,6 @@ class invoice(object):
 
     def PhoneNo_focus(self):
         self.PhoneNo.focus_set()
-    # menubar
-
-    def stocks_window(self):
-        self.stocks = stocks(self.master)
 
     # invoice
     def barcode_bind_function(self, event):
@@ -225,7 +208,7 @@ class invoice(object):
     def customer_name_bind_function(self, event):
         pass
 
-    def address_bind_function(self, event):
+    def email_address_bind_function(self, event):
         pass
 
     def enter_customer_details(self):
@@ -235,17 +218,24 @@ class invoice(object):
     def clear_customer_details(self):
         self.PhoneNo.delete(0, tk.END)
         self.CustomerName.delete(0, tk.END)
-        self.Address.delete('1.0', tk.END)
+        self.EmailAddress.delete('1.0', tk.END)
         self.CustomerType.delete(0, tk.END)
 
         self.phone_no.set('')
         self.customer_name.set('')
-        self.address.set('')
+        self.email_address.set('')
         self.customer_type.set('N/A')
 
 if __name__ == "__main__":
     root = tk.Tk()
-    manager = invoice(root)
-    screen_width=root.winfo_geometry()
-    print(screen_width)
+    manager = invoice(root,'user1')
+    '''
+    screen_width=root.winfo_screenwidth()
+    screen_height=root.winfo_screenheight()
+    window_width=325
+    window_height=500
+    x= (screen_width/2) - (window_width/2)
+    y= (screen_height/2) - (window_height/2)
+    root.geometry(f'{window_width}x{window_height}+{int(x)}+{int(y)}')
+    '''
     tk.mainloop()

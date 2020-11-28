@@ -14,7 +14,8 @@ class manager_win(object):
 
     def __init__(self, master):
         self.master = master
-        self.mas = master
+        self.mas = Toplevel(self.master)
+        self.mas.title('Manage store')
 
         # ----------------------------------menubar(File[Exit], About[About Me])
         menubar = tk.Menu(self.mas)
@@ -28,12 +29,9 @@ class manager_win(object):
 
         self.mas['menu'] = menubar
 
-        # frame
-        self.frame = tk.Frame(self.mas).grid(
-            row=0, column=0, columnspan=2, rowspan=2)
 
         # labels
-        tk.Label(self.frame, text='Master Functions', font=(
+        tk.Label(self.mas, text='Master Functions', font=(
             "Times", "12", "bold")).grid(row=0, column=0)
 
         # buttons
@@ -121,18 +119,18 @@ class stocks(object):
         tk.Button(self.labelframe2, text='Add', command=self.add_button).grid(
             row=3, column=1, sticky=tk.W+tk.N)
 
-        # ----------------------------------labels(PRODUCT CODE , PRODUCT NAME, QUANTITY LEFT, MRP, RETAIL PRICE)
-        tk.Label(self.labelframe2, text='DATE').grid(
+        # ----------------------------------labels(PRODUCT CODE , PRODUCT NAME, QUANTITY LEFT, Price per quantity)
+        tk.Label(self.labelframe2, text='Date').grid(
             row=0, column=0, sticky=tk.W+tk.N)
-        tk.Label(self.labelframe2, text='PRODUCT CODE ').grid(
+        tk.Label(self.labelframe2, text='Product code ').grid(
             row=1, column=0, sticky=tk.W+tk.N)
-        tk.Label(self.labelframe2, text='PRODUCT NAME').grid(
+        tk.Label(self.labelframe2, text='Product name').grid(
             row=1, column=2, sticky=tk.W+tk.N)
-        tk.Label(self.labelframe2, text='QUANTITY').grid(
+        tk.Label(self.labelframe2, text='Quantity').grid(
             row=1, column=4, sticky=tk.W+tk.N)
-        tk.Label(self.labelframe2, text='MRP').grid(
+        tk.Label(self.labelframe2, text='Price per quantity').grid(
             row=2, column=0, sticky=tk.W+tk.N)
-        # ----------------------------------entry(PRODUCT CODE, PRODUCT NAME, QUANTITY LEFT, MRP, RETAIL PRICE) all are StringVar
+        # ----------------------------------entry(PRODUCT CODE, PRODUCT NAME, QUANTITY LEFT, Price per quantity) all are StringVar
 
         '''
         important note. we have to bind
@@ -173,19 +171,19 @@ class stocks(object):
         self.quantity.set('')
         self.Quantity.grid(row=1, column=5, sticky=tk.W+tk.N)
 
-        self.mrp = tk.StringVar()
+        self.price_per_quantity = tk.StringVar()
 
-        self.Mrp = tk.Entry(self.labelframe2, textvariable=self.mrp)
-        self.Mrp.bind("<Return>", self.mrp_name_bind_function)
-        self.mrp.set('')
-        self.Mrp.grid(row=2, column=1, sticky=tk.W+tk.N)
+        self.PricePerQuantity = tk.Entry(self.labelframe2, textvariable=self.price_per_quantity)
+        self.PricePerQuantity.bind("<Return>", self.price_per_quantity_bind_function)
+        self.price_per_quantity.set('')
+        self.PricePerQuantity.grid(row=2, column=1, sticky=tk.W+tk.N)
 
         tabcontrol.add(tab, text='add stock purchase details')
         tabcontrol.pack(expand=1, fill="both")
 
         # -----------------------------------treeview(purchase history)----------------------------
         invoice_list = ['date', 'Product Code', 'Product Name',
-                        'Quantity']
+                        'Quantity','Price Per Quantity']
         listbar = tk.Frame(tab3)
 
         bary3 = tk.Scrollbar(listbar)
@@ -204,7 +202,7 @@ class stocks(object):
         self.invoiceList.pack(side=tk.LEFT, fill=tk.BOTH)
 
         self.invoiceList.insert('', 'end', values=('11/24/2020',
-                                                   '0000010', 'lifeboy soap', '50'))
+                                                   '0000010', 'lifeboy soap', '50','40'))
 
         barx3.config(command=self.invoiceList.xview)
         bary3.config(command=self.invoiceList.yview)
@@ -231,7 +229,7 @@ class stocks(object):
     def quantity_bind_function(self, event):
         pass
 
-    def mrp_name_bind_function(self, event):
+    def price_per_quantity_bind_function(self, event):
         pass
 
     def add_button(self):
@@ -240,8 +238,12 @@ class stocks(object):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.geometry('325x150')
     manager = manager_win(root)
     screen_width=root.winfo_screenwidth()
-    print(screen_width)
+    screen_height=root.winfo_screenheight()
+    window_width=325
+    window_height=150
+    x= (screen_width/2) - (window_width/2)
+    y= (screen_height/2) - (window_height/2)
+    root.geometry(f'{window_width}x{window_height}+{int(x)}+{int(y)}')
     tk.mainloop()
