@@ -6,6 +6,7 @@ import tkinter.messagebox as tkMessageBox
 import tkinter.ttk as ttk
 from smtplib import *
 
+
 class invoice(object):
     def __init__(self, master, user=''):
         self.master = master
@@ -19,7 +20,7 @@ class invoice(object):
         filemenu = tk.Menu(menubar, tearoff=0)
         filemenu.add_command(label='Exit', command=master.quit)
         menubar.add_cascade(label='File', menu=filemenu)
-        
+
         self.mas['menu'] = menubar
         # ----------------------------------labelframes
 
@@ -51,7 +52,7 @@ class invoice(object):
         # self.username.set(self.user)
         tk.Label(self.labelframeN, text=user).grid(
             row=0, column=1, sticky=tk.W+tk.N)
-        
+
         tk.Label(self.labelframeN, text='Name: ').grid(
             row=1, column=0, sticky=tk.W+tk.N)
 
@@ -143,7 +144,6 @@ class invoice(object):
         self.email_address.set('')
         self.EmailAddress.grid(row=3, column=1, sticky=tk.W+tk.N)
 
-
         self.customer_type = tk.StringVar()
 
         self.CustomerType = tk.Entry(
@@ -226,9 +226,10 @@ class invoice(object):
         self.email_address.set('')
         self.customer_type.set('N/A')
 
+
 if __name__ == "__main__":
     root = tk.Tk()
-    manager = invoice(root,'user1')
+    manager = invoice(root, 'user1')
     '''
     screen_width=root.winfo_screenwidth()
     screen_height=root.winfo_screenheight()

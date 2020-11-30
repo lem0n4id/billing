@@ -29,7 +29,6 @@ class manager_win(object):
 
         self.mas['menu'] = menubar
 
-
         # labels
         tk.Label(self.mas, text='Master Functions', font=(
             "Times", "12", "bold")).grid(row=0, column=0)
@@ -173,8 +172,10 @@ class stocks(object):
 
         self.price_per_quantity = tk.StringVar()
 
-        self.PricePerQuantity = tk.Entry(self.labelframe2, textvariable=self.price_per_quantity)
-        self.PricePerQuantity.bind("<Return>", self.price_per_quantity_bind_function)
+        self.PricePerQuantity = tk.Entry(
+            self.labelframe2, textvariable=self.price_per_quantity)
+        self.PricePerQuantity.bind(
+            "<Return>", self.price_per_quantity_bind_function)
         self.price_per_quantity.set('')
         self.PricePerQuantity.grid(row=2, column=1, sticky=tk.W+tk.N)
 
@@ -183,7 +184,7 @@ class stocks(object):
 
         # -----------------------------------treeview(purchase history)----------------------------
         invoice_list = ['date', 'Product Code', 'Product Name',
-                        'Quantity','Price Per Quantity']
+                        'Quantity', 'Price Per Quantity']
         listbar = tk.Frame(tab3)
 
         bary3 = tk.Scrollbar(listbar)
@@ -202,7 +203,7 @@ class stocks(object):
         self.invoiceList.pack(side=tk.LEFT, fill=tk.BOTH)
 
         self.invoiceList.insert('', 'end', values=('11/24/2020',
-                                                   '0000010', 'lifeboy soap', '50','40'))
+                                                   '0000010', 'lifeboy soap', '50', '40'))
 
         barx3.config(command=self.invoiceList.xview)
         bary3.config(command=self.invoiceList.yview)
@@ -239,11 +240,11 @@ class stocks(object):
 if __name__ == "__main__":
     root = tk.Tk()
     manager = manager_win(root)
-    screen_width=root.winfo_screenwidth()
-    screen_height=root.winfo_screenheight()
-    window_width=325
-    window_height=150
-    x= (screen_width/2) - (window_width/2)
-    y= (screen_height/2) - (window_height/2)
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    window_width = 325
+    window_height = 150
+    x = (screen_width/2) - (window_width/2)
+    y = (screen_height/2) - (window_height/2)
     root.geometry(f'{window_width}x{window_height}+{int(x)}+{int(y)}')
     tk.mainloop()
