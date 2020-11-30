@@ -78,7 +78,7 @@ values (90162602, "red bull 250ml", 120),
 #     db.commit()
 
 # # retrive name using emp_id
-# x='''select name from emp_details 
+# x='''select name from emp_details
 #     where emp_id = ?'''
 # emp_id='000001'
 # c.execute(x,(emp_id,))
@@ -88,7 +88,7 @@ values (90162602, "red bull 250ml", 120),
 
 # # retrive customer_name, email_address, membership_id using phone_no
 # x='''
-# select name, email_address, m_id 
+# select name, email_address, m_id
 # from customer_details
 # where phone_no = ?'''
 # phone_no=1234567890
@@ -107,7 +107,7 @@ values (90162602, "red bull 250ml", 120),
 # c.execute(insert_commands[2])
 # db.commit()
 
-# x='''select product_code, product_name, quantity, date_of_purchase 
+# x='''select product_code, product_name, quantity, date_of_purchase
 #         from stock_purchase_history;'''
 # c.execute(x)
 # for i in c.fetchall():

@@ -6,8 +6,8 @@ import tkinter.messagebox as tkMessageBox
 import tkinter.ttk as ttk
 from smtplib import *
 import sqlite3
-db=sqlite3.connect('database.db')
-c=db.cursor()
+db = sqlite3.connect('database.db')
+c = db.cursor()
 
 
 class invoice(object):
@@ -59,7 +59,7 @@ class invoice(object):
         tk.Label(self.labelframeN, text='Name: ').grid(
             row=1, column=0, sticky=tk.W+tk.N)
 
-        self.name=self.get_name(user)
+        self.name = self.get_name(user)
         tk.Label(self.labelframeN, text=self.name).grid(
             row=1, column=1, sticky=tk.W+tk.N)
 
@@ -187,15 +187,15 @@ class invoice(object):
         listbar.pack(fill=tk.X)
 
         self.PhoneNo_focus()
-    
-    #database integration
+
+    # database integration
     def get_name(self, emp_id):
-        x='''select name from emp_details 
+        x = '''select name from emp_details 
         where emp_id = ?'''
-        name=''
-        c.execute(x,(emp_id,))
+        name = ''
+        c.execute(x, (emp_id,))
         for i in c.fetchall():
-            name=i[0]
+            name = i[0]
         return name
 
     # focus

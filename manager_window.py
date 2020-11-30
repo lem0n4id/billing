@@ -6,8 +6,8 @@ import tkinter.messagebox as tkMessageBox
 import tkinter.ttk as ttk
 from smtplib import *
 import sqlite3
-db=sqlite3.connect('database.db')
-c=db.cursor()
+db = sqlite3.connect('database.db')
+c = db.cursor()
 
 
 class manager_win(object):
@@ -95,8 +95,8 @@ class stocks(object):
         self.invoiceList['height'] = 20
         # self.invoiceList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
         self.invoiceList.pack(side=tk.LEFT, fill=tk.BOTH)
-        
-        self.stocks=self.get_available_stock()
+
+        self.stocks = self.get_available_stock()
         for i in self.stocks:
 
             self.invoiceList.insert('', 'end', values=(i))
@@ -207,7 +207,7 @@ class stocks(object):
         # self.invoiceList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
         self.invoiceList.pack(side=tk.LEFT, fill=tk.BOTH)
 
-        self.history=self.get_stock_purchase_history()
+        self.history = self.get_stock_purchase_history()
         for i in self.history:
 
             self.invoiceList.insert('', 'end', values=(i))
@@ -224,29 +224,29 @@ class stocks(object):
         tabcontrol.pack(expand=1, fill="both")
         self.BarCode_focus()
 
-    #database integration
+    # database integration
     def get_available_stock(self):
-        stocks=()
-        x='''select product_code, product_name, quantity  
+        stocks = ()
+        x = '''select product_code, product_name, quantity  
         from stock_purchase_history;'''
         c.execute(x)
         for i in c.fetchall():
-            stocks+=(i,)
+            stocks += (i,)
         print(stocks)
 
-
         return stocks
+
     def get_stock_purchase_history(self):
-        history=()
-        x='''select date_of_purchase, product_code, product_name, quantity   
+        history = ()
+        x = '''select date_of_purchase, product_code, product_name, quantity   
         from stock_purchase_history;'''
         c.execute(x)
         for i in c.fetchall():
-            history+=(i,)
+            history += (i,)
         print(history)
 
         return history
-    
+
     # focus
 
     def BarCode_focus(self):
