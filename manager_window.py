@@ -119,7 +119,7 @@ class stocks(object):
         self.labelframe2 = tk.LabelFrame(tab, text="Add to Stocks")
         self.labelframe2.pack(side=tk.TOP, fill=tk.X)
 
-        # ----------------------------------buttons(Add, Remove)
+        # ----------------------------------buttons(Add)
         tk.Button(self.labelframe2, text='Add', command=self.add_button).grid(
             row=3, column=1, sticky=tk.W+tk.N)
 
