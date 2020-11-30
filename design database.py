@@ -2,8 +2,7 @@ import sqlite3
 def select_query(x:str):
     c.execute(x)
     for i in c.fetchall():
-        if i[0]=='table':
-            print(i[4])
+        print(i)
 def create_table_query(x:str):
     c.execute(x)
     db.commit()
@@ -22,6 +21,7 @@ tables=('''CREATE TABLE emp_details (
 '''CREATE TABLE users (
   emp_id   varchar(6) not null,
   password varchar(6),
+  desgn    varchar(10),
   FOREIGN KEY(emp_id) REFERENCES emp_details(emp_id));''',
 '''CREATE TABLE inventory (
   product_code  int(13) not null primary key, 
@@ -47,11 +47,38 @@ tables=('''CREATE TABLE emp_details (
 )
 # for i in tables:
 #   create_table_query(tables[5])
-select_query('select * from sqlite_master')
-insert_commands=(
-'''
+# select_query('select * from sqlite_master')
+insert_commands=('''
 insert into emp_details
-(emp_id, name, desgn, sex, age, address, phone_no, date_joined)
-values("000001", "yashas", "manager", "male", 18, "seawoods", "1234567890","2020-11-30")
-''')
+(emp_id, name, desgn, sex, age, address, phone_no, email_address, date_joined)
+values
+("000001", "yashas", "manager", "male", 18, "seawoods", "1234567890", "yashas123@gmail.com", "2020-11-30"),
+("000002", "rohan", "cashier", "male", 21, "nerul", "1111111110", "rohan123@gmail.com", "2020-11-30");''',
+'''
+insert into users
+(emp_id, password, desgn)
+values
+("000001","000001", "manager"),
+("000002","000002", "cashier");'''
+)
+# for i in insert_commands:
+#     c.execute(i)
+#     db.commit()
+
+# select_query("select * from users;")
+# #login info retrival
+login_infos={}
+def get_login_details():
+    x="select * from users;"
+    c.execute(x)
+    for i in c.fetchall():
+        username, password, desgn= i
+        login_infos[desgn]=(username, password)
+
+get_login_details()
+print(login_infos)
+managers=[]
+cashiers=[]
+managers.append(login_infos['manager'])
+cashiers.append(login_infos['cashier'])
 

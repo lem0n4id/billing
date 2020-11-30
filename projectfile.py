@@ -4,6 +4,7 @@ import tkinter.font as font
 import tkinter.messagebox as tkMessageBox
 import tkinter.ttk as ttk
 from smtplib import *
+import sqlite3
 import manager_window
 import cashier_window
 
@@ -96,6 +97,7 @@ class loginPage(object):
 
 
 if __name__ == '__main__':
+    db=sqlite3.connect("database.db")
 
     root = tk.Tk()
     root.title('')
