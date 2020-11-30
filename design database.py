@@ -67,18 +67,21 @@ values
 
 # select_query("select * from users;")
 # #login info retrival
-login_infos={}
+login_infos={'manager':[],'cashier':[]}
 def get_login_details():
     x="select * from users;"
     c.execute(x)
+    a=0
     for i in c.fetchall():
         username, password, desgn= i
-        login_infos[desgn]=(username, password)
+        for j in login_infos:
+            if j == desgn:
+                login_infos[j]= login_infos[j] + [(username,password)]
+                a+=1
+            
+    return login_infos['manager'], login_infos['cashier'], a
 
-get_login_details()
-print(login_infos)
-managers=[]
-cashiers=[]
-managers.append(login_infos['manager'])
-cashiers.append(login_infos['cashier'])
+managers, cashiers, no_of_users= get_login_details()
+print(managers, cashiers, no_of_users)
+
 
