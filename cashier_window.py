@@ -5,6 +5,9 @@ import tkinter.font as font
 import tkinter.messagebox as tkMessageBox
 import tkinter.ttk as ttk
 from smtplib import *
+import sqlite3
+db=sqlite3.connect('database.db')
+c=db.cursor()
 
 
 class invoice(object):
@@ -55,6 +58,10 @@ class invoice(object):
 
         tk.Label(self.labelframeN, text='Name: ').grid(
             row=1, column=0, sticky=tk.W+tk.N)
+
+        self.name=self.get_name(user)
+        tk.Label(self.labelframeN, text=self.name).grid(
+            row=1, column=1, sticky=tk.W+tk.N)
 
         # ----------------------------------buttons in invoice(Add, Remove)
 
@@ -180,6 +187,17 @@ class invoice(object):
         listbar.pack(fill=tk.X)
 
         self.PhoneNo_focus()
+    
+    #database integration
+    def get_name(self, emp_id):
+        x='''select name from emp_details 
+        where emp_id = ?'''
+        name=''
+        c.execute(x,(emp_id,))
+        for i in c.fetchall():
+            name=i[0]
+        return name
+
     # focus
 
     def PhoneNo_focus(self):
@@ -229,7 +247,8 @@ class invoice(object):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    manager = invoice(root, 'user1')
+    manager = invoice(root, '000001')
+
     '''
     screen_width=root.winfo_screenwidth()
     screen_height=root.winfo_screenheight()

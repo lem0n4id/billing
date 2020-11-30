@@ -5,6 +5,9 @@ import tkinter.font as font
 import tkinter.messagebox as tkMessageBox
 import tkinter.ttk as ttk
 from smtplib import *
+import sqlite3
+db=sqlite3.connect('database.db')
+c=db.cursor()
 
 
 class manager_win(object):
@@ -87,14 +90,16 @@ class stocks(object):
         self.invoiceList.column(column='#0', width=0, stretch=False)
         for i in range(len(invoice_list)):
             self.invoiceList.heading(i, text=invoice_list[i])
-            self.invoiceList.column(i, width=100)
+            self.invoiceList.column(i, width=200)
         self.invoiceList.column(1, width=100)
         self.invoiceList['height'] = 20
         # self.invoiceList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
         self.invoiceList.pack(side=tk.LEFT, fill=tk.BOTH)
+        
+        self.stocks=self.get_available_stock()
+        for i in self.stocks:
 
-        self.invoiceList.insert('', 'end', values=(
-            '0000010', 'lifeboy soap', '86'))
+            self.invoiceList.insert('', 'end', values=(i))
 
         barx3.config(command=self.invoiceList.xview)
         bary3.config(command=self.invoiceList.yview)
@@ -202,8 +207,10 @@ class stocks(object):
         # self.invoiceList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
         self.invoiceList.pack(side=tk.LEFT, fill=tk.BOTH)
 
-        self.invoiceList.insert('', 'end', values=('11/24/2020',
-                                                   '0000010', 'lifeboy soap', '50', '40'))
+        self.history=self.get_stock_purchase_history()
+        for i in self.history:
+
+            self.invoiceList.insert('', 'end', values=(i))
 
         barx3.config(command=self.invoiceList.xview)
         bary3.config(command=self.invoiceList.yview)
@@ -216,6 +223,30 @@ class stocks(object):
         tabcontrol.add(tab3, text='purchase history')
         tabcontrol.pack(expand=1, fill="both")
         self.BarCode_focus()
+
+    #database integration
+    def get_available_stock(self):
+        stocks=()
+        x='''select product_code, product_name, quantity  
+        from stock_purchase_history;'''
+        c.execute(x)
+        for i in c.fetchall():
+            stocks+=(i,)
+        print(stocks)
+
+
+        return stocks
+    def get_stock_purchase_history(self):
+        history=()
+        x='''select date_of_purchase, product_code, product_name, quantity   
+        from stock_purchase_history;'''
+        c.execute(x)
+        for i in c.fetchall():
+            history+=(i,)
+        print(history)
+
+        return history
+    
     # focus
 
     def BarCode_focus(self):

@@ -35,16 +35,12 @@ tables = ('''CREATE TABLE emp_details (
           '''CREATE TABLE available_stock (
   product_code  int(13), 
   product_name  varchar(355), 
-  quantity      int(10),
-  FOREIGN KEY(product_code) REFERENCES inventory(product_code),
-  FOREIGN KEY(product_name) REFERENCES inventory(product_name));''',
+  quantity      int(10));''',
           '''CREATE TABLE stock_purchase_history (
   product_code      int(13), 
   product_name      varchar(355), 
   quantity          int(10),
-  date_of_purchase  date,
-  FOREIGN KEY(product_code) REFERENCES inventory(product_code),
-  FOREIGN KEY(product_name) REFERENCES inventory(product_name));''',
+  date_of_purchase  date);''',
           '''CREATE TABLE customer_details (
   m_id 		int(10),
   name 		varchar(355),
@@ -65,8 +61,58 @@ insert into users
 (emp_id, password, desgn)
 values
 ("000001","000001", "manager"),
-("000002","000002", "cashier");'''
+("000002","000002", "cashier");''',
+                   '''
+insert into stock_purchase_history 
+(product_code, product_name, quantity, date_of_purchase)
+values (90162602, "red bull 250ml", 120, "2020-10-25"),
+(8515135837011, "colgate maxfresh toothpaste", 200, "2020-10-25");''',
+                   '''
+insert into available_stock
+(product_code, product_name, quantity)
+values (90162602, "red bull 250ml", 120),
+(8515135837011, "colgate maxfresh toothpaste", 200);'''
                    )
 # for i in insert_commands:
 #     c.execute(i)
 #     db.commit()
+
+# # retrive name using emp_id
+# x='''select name from emp_details 
+#     where emp_id = ?'''
+# emp_id='000001'
+# c.execute(x,(emp_id,))
+# for i in c.fetchall():
+#     print(i[0])
+
+
+# # retrive customer_name, email_address, membership_id using phone_no
+# x='''
+# select name, email_address, m_id 
+# from customer_details
+# where phone_no = ?'''
+# phone_no=1234567890
+# c.execute(x,(phone_no,))
+
+# retrive product_name, mrp, price using product_code
+
+# #available_stock
+# x='''select product_code,product_name,quantity from available_stock;'''
+# c.execute(x)
+# for i in c.fetchall():
+#     product_code, product_name, quantity = i
+#     # insert into treeview(product_code, product_name, quantity)
+
+# #inserting into purchase_history
+# c.execute(insert_commands[2])
+# db.commit()
+
+# x='''select product_code, product_name, quantity, date_of_purchase 
+#         from stock_purchase_history;'''
+# c.execute(x)
+# for i in c.fetchall():
+#     print(i)
+
+# #inserting into available_stock
+# c.execute(insert_commands[3])
+# db.commit()
