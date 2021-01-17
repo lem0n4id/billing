@@ -51,7 +51,7 @@ class manager_win(object):
         pass
 
     def Employyee_details_button(self):
-        # employyee_details = EmployyeeDetails(self.master)
+        employyee_details = EmployyeeDetails(self.master)
         pass
 
     def Customer_details_button(self):
@@ -71,26 +71,26 @@ class stocks(object):
 
         tabcontrol = ttk.Notebook(self.mas)
 
-        tab2 = ttk.Frame(tabcontrol)
+        frame = ttk.Frame(tabcontrol)
 
         # -----------------------------------treeview(stock available)----------------------------
         invoice_list = ['Product Code', 'Product Name',
                         'Quantity', 'Mrp', 'Price']
-        listbar = tk.Frame(tab2)
+        listbar = tk.Frame(frame)
 
         bary3 = tk.Scrollbar(listbar)
         bary3.pack(side=tk.RIGHT, fill=tk.Y)
         barx3 = tk.Scrollbar(listbar, orient=tk.HORIZONTAL)
         barx3.pack(side=tk.BOTTOM, fill=tk.X)
 
-        self.invoiceList = ttk.Treeview(listbar, columns=invoice_list)
-        self.invoiceList.column(column='#0', width=0, stretch=False)
+        self.EmployyeeList = ttk.Treeview(listbar, columns=invoice_list)
+        self.EmployyeeList.column(column='#0', width=0, stretch=False)
         for i in range(len(invoice_list)):
-            self.invoiceList.heading(i, text=invoice_list[i])
-            self.invoiceList.column(i, width=200)
-        self.invoiceList.column(1, width=100)
-        self.invoiceList['height'] = 20
-        self.invoiceList.pack(side=tk.LEFT, fill=tk.BOTH)
+            self.EmployyeeList.heading(i, text=invoice_list[i])
+            self.EmployyeeList.column(i, width=200)
+        self.EmployyeeList.column(1, width=100)
+        self.EmployyeeList['height'] = 20
+        self.EmployyeeList.pack(side=tk.LEFT, fill=tk.BOTH)
 
         self.id_1 = 1
         self.iid_1 = 0
@@ -98,20 +98,20 @@ class stocks(object):
         self.stocks = self.get_available_stock()
         for i in self.stocks:
 
-            self.invoiceList.insert('', 'end', iid=self.iid_1, values=(i))
+            self.EmployyeeList.insert('', 'end', iid=self.iid_1, values=(i))
 
             self.id_1 += 1
             self.iid_1 += 1
 
-        barx3.config(command=self.invoiceList.xview)
-        bary3.config(command=self.invoiceList.yview)
+        barx3.config(command=self.EmployyeeList.xview)
+        bary3.config(command=self.EmployyeeList.yview)
 
-        self.invoiceList.config(xscrollcommand=barx3.set,
+        self.EmployyeeList.config(xscrollcommand=barx3.set,
                                 yscrollcommand=bary3.set)
 
         listbar.pack(fill=tk.X)
 
-        tabcontrol.add(tab2, text='stock available')
+        tabcontrol.add(frame, text='stock available')
         tabcontrol.pack(expand=1, fill="both")
 
         tab3 = ttk.Frame(tabcontrol)
@@ -210,15 +210,15 @@ class stocks(object):
         barx3 = tk.Scrollbar(listbar, orient=tk.HORIZONTAL)
         barx3.pack(side=tk.BOTTOM, fill=tk.X)
 
-        self.invoiceList = ttk.Treeview(listbar, columns=invoice_list)
-        self.invoiceList.column(column='#0', width=0, stretch=False)
+        self.EmployyeeList = ttk.Treeview(listbar, columns=invoice_list)
+        self.EmployyeeList.column(column='#0', width=0, stretch=False)
         for i in range(len(invoice_list)):
-            self.invoiceList.heading(i, text=invoice_list[i])
-            self.invoiceList.column(i, width=100)
-        self.invoiceList.column(1, width=100)
-        self.invoiceList['height'] = 20
-        # self.invoiceList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
-        self.invoiceList.pack(side=tk.LEFT, fill=tk.BOTH)
+            self.EmployyeeList.heading(i, text=invoice_list[i])
+            self.EmployyeeList.column(i, width=100)
+        self.EmployyeeList.column(1, width=100)
+        self.EmployyeeList['height'] = 20
+        # self.EmployyeeList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
+        self.EmployyeeList.pack(side=tk.LEFT, fill=tk.BOTH)
 
         self.id_2 = 1
         self.iid_2 = 0
@@ -226,15 +226,15 @@ class stocks(object):
         self.history = self.get_stock_purchase_history()
         for i in self.history:
 
-            self.invoiceList.insert('', 'end', iid=self.iid_2, values=(i))
+            self.EmployyeeList.insert('', 'end', iid=self.iid_2, values=(i))
 
             self.id_2 += 1
             self.iid_2 += 1
 
-        barx3.config(command=self.invoiceList.xview)
-        bary3.config(command=self.invoiceList.yview)
+        barx3.config(command=self.EmployyeeList.xview)
+        bary3.config(command=self.EmployyeeList.yview)
 
-        self.invoiceList.config(xscrollcommand=barx3.set,
+        self.EmployyeeList.config(xscrollcommand=barx3.set,
                                 yscrollcommand=bary3.set)
 
         listbar.pack(fill=tk.X)
@@ -304,7 +304,60 @@ class stocks(object):
         # c.execute(x1,(product_code, product_name, quantity, date, price, mrp))
         pass
 
+class EmployyeeDetails(object):
+    def __init__(self,master,user=''):
+        self.user=user
+        self.mas = tk.Toplevel(master)
+        self.mas.title('Employyee Details')
 
+        # ----------------------------------menubar(File[Exit], , About[About Me])
+        menubar = tk.Menu(self.mas)
+        filemenu = tk.Menu(menubar, tearoff=0)
+        filemenu.add_command(label='Exit', command=master.quit)
+        menubar.add_cascade(label='File', menu=filemenu)
+
+        self.mas['menu'] = menubar
+
+        # -----------------------------------treeview(employyee details)----------------------------
+        invoice_list = ['emp_id', 'name', 'desgn', 'sex', 'age', 'address', 'phone_no', 'email_address', 'date_joined']
+        listbar = tk.Frame(self.mas)
+
+        bary3 = tk.Scrollbar(listbar)
+        bary3.pack(side=tk.RIGHT, fill=tk.Y)
+        barx3 = tk.Scrollbar(listbar, orient=tk.HORIZONTAL)
+        barx3.pack(side=tk.BOTTOM, fill=tk.X)
+
+        self.EmployyeeList = ttk.Treeview(listbar, columns=invoice_list)
+        self.EmployyeeList.column(column='#0', width=0, stretch=False)
+        for i in range(len(invoice_list)):
+            self.EmployyeeList.heading(i, text=invoice_list[i])
+            self.EmployyeeList.column(i, width=200)
+        self.EmployyeeList.column(1, width=100)
+        self.EmployyeeList['height'] = 20
+        self.EmployyeeList.pack(side=tk.LEFT, fill=tk.BOTH)
+
+
+        self.employyees = self.get_details()
+        for i in self.employyees:
+
+            self.EmployyeeList.insert('', 'end',  values=(i))
+
+
+        barx3.config(command=self.EmployyeeList.xview)
+        bary3.config(command=self.EmployyeeList.yview)
+
+        self.EmployyeeList.config(xscrollcommand=barx3.set,
+                                yscrollcommand=bary3.set)
+
+        listbar.pack(fill=tk.X)
+    
+    def get_details(self):
+        x='''select emp_id, name, desgn, sex, age, address, phone_no, email_address, date_joined
+         from emp_details'''
+        c.execute(x)
+        return c.fetchall()
+
+        
 if __name__ == "__main__":
     root = tk.Tk()
     manager = manager_win(root)
