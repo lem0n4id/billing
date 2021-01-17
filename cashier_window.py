@@ -210,27 +210,72 @@ class invoice(object):
         self.PhoneNo.focus_set()
 
     # invoice
+    def get_productcode(self):
+        x='''select product_name, quantity from available_stock
+            where product_code=?'''
+        product_code = int(self.ProductCode.get())
+        c.execute(x,(product_code,))
+        try:
+            product_name, quantity_available = c.fetchall()[0]
+            self.product_name.set(product_name)
+            self.ProductName.focus_set()
+            return (product_code, product_name, int(quantity_available))
+        except:
+            tkMessageBox.showinfo('Notice', 'please enter a valid product code')
+            return (0,0,0)
+
     def productcode_bind_function(self, event):
-        self.ProductName.focus_set()
+        product_code, product_name, quantity_available = self.get_productcode()
+
 
     def product_name_bind_function(self, event):
         self.Quantity.focus_set()
 
     def quantity_bind_function(self, event):
+        product_code, product_name, quantity_available = self.get_productcode()
+
         quantity = self.Quantity.get()
         if quantity == '':
             tkMessageBox.showinfo('Notice', 'please enter a valid quantity')
-        self.bill_add()
+        try:
+
+            if quantity_available - int(self.Quantity.get()) < 0:
+                raise ArithmeticError
+            else:
+                
+                x='''update available_stock
+                set quantity = quantity - ?
+                where product_code = ?'''
+                c.execute(x,(int(self.Quantity.get()),product_code))
+                db.commit()
+                #self.
+                
+                self.bill_add()
+        except:
+            tkMessageBox.showinfo('Notice', 'please enter a valid quantity,stock not available')
+    
+    def retrive_product_details():
+        x='''select '''
+        return
+        
 
     def bill_add(self):
-        # add into treeview
-        item = (self.ProductCode.get().strip().lower(), self.ProductName.get(
-        ).strip().lower(), self.Quantity.get().strip().lower())
+        # add into treeview(productcode, productname,mrp,price,quantity,total)
+        productcode=int(self.ProductCode.get().strip().lower())
+        productname=self.ProductName.get().strip().lower()
+        quantity=int(self.Quantity.get().strip().lower())
+
+        x='''select mrp,price from available_stock
+        where product_code = ?'''
+        c.execute(x,(productcode,))
+        mrp, price= c.fetchone()
+        total=price*quantity
+
+        item = (productcode, productname, mrp, price, quantity, total)
         self.invoiceList.insert('', 'end', iid=self.iid,
                                 values=((self.id,)+item))
 
-        self.id += 1
-        self.iid += 1
+        
 
         # clear entries
         self.ProductCode.delete(0, tk.END)
@@ -241,11 +286,29 @@ class invoice(object):
         self.product_name.set('')
         self.quantity.set('')
 
-        self.items_billed += item
+        self.items_billed += (item, self.iid)
+
+        self.id += 1
+        self.iid += 1
 
     def bill_remove(self):
         row_id = int(self.invoiceList.focus())
+        
+        for i in self.items_billed:
+            if self.items_billed[1] == row_id:
+                product_code, quantity = self.items_billed[0][0], self.items_billed[0][4]
+        
+        x='''update available_stock
+            set quantity = quantity + ?
+            where product_code = ?'''
+        c.execute(x,(quantity, product_code))
+        db.commit()
+
+        self.iid-=1
+        self.id-=1
         self.invoiceList.delete(row_id)
+
+
 
     # customer details
     def phone_no_bind_function(self, event):
@@ -271,7 +334,7 @@ class invoice(object):
         pass
 
     def enter_customer_details(self):
-        # phone_no_bind_function(self)
+        self.phone_no_bind_function(self)
         pass
 
     def clear_customer_details(self):

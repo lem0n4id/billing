@@ -29,18 +29,19 @@ tables = ('''CREATE TABLE emp_details (
   password varchar(6),
   desgn    varchar(10),
   FOREIGN KEY(emp_id) REFERENCES emp_details(emp_id));''',
-          '''CREATE TABLE inventory (
-  product_code  int(13) not null primary key, 
-  product_name  varchar(355) not null);''',
           '''CREATE TABLE available_stock (
   product_code  int(13), 
   product_name  varchar(355), 
-  quantity      int(10));''',
+  quantity      int(10),
+  price         int(10),
+  mrp           int(10));''',
           '''CREATE TABLE stock_purchase_history (
   product_code      int(13), 
   product_name      varchar(355), 
   quantity          int(10),
-  date_of_purchase  date);''',
+  date_of_purchase  date,
+  price         int(10),
+  mrp           int(10));''',
           '''CREATE TABLE customer_details (
   m_id 		int(10),
   name 		varchar(355),
@@ -64,14 +65,14 @@ values
 ("000002","000002", "cashier");''',
                    '''
 insert into stock_purchase_history 
-(product_code, product_name, quantity, date_of_purchase)
-values (90162602, "red bull 250ml", 120, "2020-10-25"),
-(8515135837011, "colgate maxfresh toothpaste", 200, "2020-10-25");''',
+(product_code, product_name, quantity, date_of_purchase, price, mrp)
+values (90162602, "red bull 250ml", 120, "2020-10-25", 50, 60),
+(8515135837011, "colgate maxfresh toothpaste", 200, "2020-10-25", 120, 120);''',
                    '''
 insert into available_stock
-(product_code, product_name, quantity)
-values (90162602, "red bull 250ml", 120),
-(8515135837011, "colgate maxfresh toothpaste", 200);''',
+(product_code, product_name, quantity, price, mrp)
+values (90162602, "red bull 250ml", 120, 50, 60),
+(8515135837011, "colgate maxfresh toothpaste", 200, 120, 120);''',
                    '''
 insert into customer_details
 (m_id, name, phone_no, email_address)
@@ -118,12 +119,4 @@ values (000001, 'ramprasad', 1124578945, 'ramprasad111@gmail.com'),
 # c.execute(x)
 # for i in c.fetchall():
 #     print(i)
-
-# #inserting into available_stock
-# c.execute(insert_commands[3])
-# db.commit()
-
-# #inserting into customer_details
-# c.execute(insert_commands[4])
-# db.commit()
-select_query('select * from customer_details')
+select_query('select * from available_stock')
