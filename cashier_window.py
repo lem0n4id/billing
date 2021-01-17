@@ -90,7 +90,7 @@ class invoice(object):
 
         self.ProductCode = tk.Entry(
             self.labelframe1, textvariable=self.productcode)
-        self.ProductCode.bind("<Return>", self.barcode_bind_function)
+        self.ProductCode.bind("<Return>", self.productcode_bind_function)
         self.productcode.set('')
         self.ProductCode.grid(row=0, column=1, sticky=tk.W+tk.N)
 
@@ -130,9 +130,10 @@ class invoice(object):
 
         self.phone_no = tk.StringVar()
 
-        self.PhoneNo = tk.Entry(self.labelframeN1, textvariable=self.phone_no)
+        # , textvariable=self.phone_no)
+        self.PhoneNo = tk.Entry(self.labelframeN1)
         self.PhoneNo.bind("<Return>", self.phone_no_bind_function)
-        self.phone_no.set('')
+        # self.phone_no.set(self.PhoneNo.get().strip())
         self.PhoneNo.grid(row=0, column=1, sticky=tk.W+tk.N)
 
         self.customer_name = tk.StringVar()
@@ -151,16 +152,18 @@ class invoice(object):
         self.email_address.set('')
         self.EmailAddress.grid(row=3, column=1, sticky=tk.W+tk.N)
 
-        self.customer_type = tk.StringVar()
+        self.membership_id = tk.StringVar()
 
-        self.CustomerType = tk.Entry(
-            self.labelframeN1, textvariable=self.customer_type)
-        self.customer_type.set('N/A')
-        self.CustomerType.grid(row=0, column=3, sticky=tk.W+tk.N)
+        self.MembershipId = tk.Entry(
+            self.labelframeN1, textvariable=self.membership_id)
+        self.membership_id.set('N/A')
+        self.MembershipId.grid(row=0, column=3, sticky=tk.W+tk.N)
 
         # -----------------------------------treeview----------------------------
         invoice_list = ['Sr no', 'Product Code', 'Product Name',
                         'MRP', 'Price', 'Quantity', 'Total']
+        self.items_billed = ()
+
         listbar = tk.Frame(self.mas)
 
         bary3 = tk.Scrollbar(listbar)
@@ -177,6 +180,9 @@ class invoice(object):
         self.invoiceList['height'] = 20
         # self.invoiceList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
         self.invoiceList.pack(side=tk.LEFT, fill=tk.BOTH)
+
+        self.id = 1
+        self.iid = 0
 
         barx3.config(command=self.invoiceList.xview)
         bary3.config(command=self.invoiceList.yview)
@@ -204,24 +210,59 @@ class invoice(object):
         self.PhoneNo.focus_set()
 
     # invoice
-    def barcode_bind_function(self, event):
-        pass
+    def productcode_bind_function(self, event):
+        self.ProductName.focus_set()
 
     def product_name_bind_function(self, event):
-        pass
+        self.Quantity.focus_set()
 
     def quantity_bind_function(self, event):
-        pass
+        quantity = self.Quantity.get()
+        if quantity == '':
+            tkMessageBox.showinfo('Notice', 'please enter a valid quantity')
+        self.bill_add()
 
     def bill_add(self):
-        pass
+        # add into treeview
+        item = (self.ProductCode.get().strip().lower(), self.ProductName.get(
+        ).strip().lower(), self.Quantity.get().strip().lower())
+        self.invoiceList.insert('', 'end', iid=self.iid,
+                                values=((self.id,)+item))
+
+        self.id += 1
+        self.iid += 1
+
+        # clear entries
+        self.ProductCode.delete(0, tk.END)
+        self.ProductName.delete(0, tk.END)
+        self.Quantity.delete(0, tk.END)
+
+        self.productcode.set('')
+        self.product_name.set('')
+        self.quantity.set('')
+
+        self.items_billed += item
 
     def bill_remove(self):
-        pass
+        row_id = int(self.invoiceList.focus())
+        self.invoiceList.delete(row_id)
 
     # customer details
     def phone_no_bind_function(self, event):
-        pass
+        x = '''
+        select name, email_address, m_id from customer_details where phone_no = ?'''
+        phone_no = self.PhoneNo.get().strip()
+        print(phone_no)
+        c.execute(x, (phone_no,))
+        try:
+            name, email, m_id = c.fetchall()[0]
+            print(name, len(name))
+            self.customer_name.set(name)
+            self.email_address.set(email)
+            self.membership_id.set(m_id)
+        except:
+            tkMessageBox.showinfo(
+                'Notice', 'phone no. does not exist, please enter a valid phone no.')
 
     def customer_name_bind_function(self, event):
         pass
@@ -236,13 +277,13 @@ class invoice(object):
     def clear_customer_details(self):
         self.PhoneNo.delete(0, tk.END)
         self.CustomerName.delete(0, tk.END)
-        self.EmailAddress.delete('1.0', tk.END)
-        self.CustomerType.delete(0, tk.END)
+        self.EmailAddress.delete(0, tk.END)
+        self.MembershipId.delete(0, tk.END)
 
         self.phone_no.set('')
         self.customer_name.set('')
         self.email_address.set('')
-        self.customer_type.set('N/A')
+        self.membership_id.set('N/A')
 
 
 if __name__ == "__main__":
