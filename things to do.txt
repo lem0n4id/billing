@@ -1,4 +1,4 @@
-1)add stocks tab
+
 2)updation of table when stock is added
 3)retrive product name into entry boxes using product_code (bind_function)
 4)adding items (billing) into treeview
