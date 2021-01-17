@@ -11,9 +11,6 @@ c = db.cursor()
 
 
 class manager_win(object):
-    """
-    docstring
-    """
 
     def __init__(self, master):
         self.master = master
@@ -39,12 +36,12 @@ class manager_win(object):
         # buttons
         tk.Button(self.mas, text='Stocks', command=self.Stocks_button).grid(
             row=1, column=0, sticky=tk.N+tk.W, padx=10, pady=10, ipadx=36, ipady=5)
-        tk.Button(self.mas, text='Sales', command=self.Sales_button).grid(
-            row=1, column=1, sticky=tk.N+tk.W, padx=10, pady=10, ipadx=36, ipady=5)
+        # tk.Button(self.mas, text='Sales', command=self.Sales_button).grid(
+        #     row=1, column=1, sticky=tk.N+tk.W, padx=10, pady=10, ipadx=36, ipady=5)
         tk.Button(self.mas, text='Employyee details', command=self.Employyee_details_button).grid(
-            row=2, column=0, sticky=tk.N+tk.W, padx=10, pady=10, ipadx=5, ipady=5)
-        tk.Button(self.mas, text='Customer details', command=self.Customer_details_button).grid(
-            row=2, column=1, sticky=tk.N+tk.W, padx=10, pady=10, ipadx=5, ipady=5)
+            row=1, column=1, sticky=tk.N+tk.W, padx=10, pady=10, ipadx=5, ipady=5)
+        # tk.Button(self.mas, text='Customer details', command=self.Customer_details_button).grid(
+        #     row=2, column=1, sticky=tk.N+tk.W, padx=10, pady=10, ipadx=5, ipady=5)
 
     def Stocks_button(self):
         stock_window = stocks(self.master)
@@ -78,7 +75,7 @@ class stocks(object):
 
         # -----------------------------------treeview(stock available)----------------------------
         invoice_list = ['Product Code', 'Product Name',
-                        'Quantity']
+                        'Quantity', 'Mrp', 'Price']
         listbar = tk.Frame(tab2)
 
         bary3 = tk.Scrollbar(listbar)
@@ -93,7 +90,6 @@ class stocks(object):
             self.invoiceList.column(i, width=200)
         self.invoiceList.column(1, width=100)
         self.invoiceList['height'] = 20
-        # self.invoiceList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
         self.invoiceList.pack(side=tk.LEFT, fill=tk.BOTH)
 
         self.id_1 = 1
@@ -139,8 +135,10 @@ class stocks(object):
             row=1, column=2, sticky=tk.W+tk.N)
         tk.Label(self.labelframe2, text='Quantity').grid(
             row=1, column=4, sticky=tk.W+tk.N)
-        tk.Label(self.labelframe2, text='Price per quantity').grid(
+        tk.Label(self.labelframe2, text='Mrp').grid(
             row=2, column=0, sticky=tk.W+tk.N)
+        tk.Label(self.labelframe2, text='Price per quantity').grid(
+            row=2, column=2, sticky=tk.W+tk.N)
         # ----------------------------------entry(PRODUCT CODE, PRODUCT NAME, QUANTITY LEFT, Price per quantity) all are StringVar
 
         '''
@@ -163,7 +161,7 @@ class stocks(object):
 
         self.ProductCode = tk.Entry(
             self.labelframe2, textvariable=self.productcode)
-        self.ProductCode.bind("<Return>", self.barcode_bind_function)
+        self.ProductCode.bind("<Return>", self.productcode_bind_function)
         self.productcode.set('')
         self.ProductCode.grid(row=1, column=1, sticky=tk.W+tk.N)
 
@@ -177,26 +175,34 @@ class stocks(object):
 
         self.quantity = tk.StringVar()
 
-        self.Quantity = tk.Entry(self.labelframe2, textvariable=self.quantity)
+        self.Quantity = tk.Entry(
+            self.labelframe2, textvariable=self.quantity)
         self.Quantity.bind("<Return>", self.quantity_bind_function)
         self.quantity.set('')
         self.Quantity.grid(row=1, column=5, sticky=tk.W+tk.N)
+
+        self.mrp = tk.StringVar()
+
+        self.Mrp = tk.Entry(
+            self.labelframe2, textvariable=self.mrp)
+        self.Mrp.bind("<Return>", self.mrp_bind_function)
+        self.mrp.set('')
+        self.Mrp.grid(row=2, column=1, sticky=tk.W+tk.N)
 
         self.price_per_quantity = tk.StringVar()
 
         self.PricePerQuantity = tk.Entry(
             self.labelframe2, textvariable=self.price_per_quantity)
-        self.PricePerQuantity.bind(
-            "<Return>", self.price_per_quantity_bind_function)
+        self.PricePerQuantity.bind("<Return>", self.price_per_quantity_bind_function)
         self.price_per_quantity.set('')
-        self.PricePerQuantity.grid(row=2, column=1, sticky=tk.W+tk.N)
+        self.PricePerQuantity.grid(row=2, column=3, sticky=tk.W+tk.N)
 
         tabcontrol.add(tab, text='add stock purchase details')
         tabcontrol.pack(expand=1, fill="both")
 
         # -----------------------------------treeview(purchase history)----------------------------
         invoice_list = ['date', 'Product Code', 'Product Name',
-                        'Quantity', 'Price Per Quantity']
+                        'Quantity', 'Mrp', 'Price Per Quantity']
         listbar = tk.Frame(tab3)
 
         bary3 = tk.Scrollbar(listbar)
@@ -235,23 +241,24 @@ class stocks(object):
 
         tabcontrol.add(tab3, text='purchase history')
         tabcontrol.pack(expand=1, fill="both")
-        self.BarCode_focus()
+        self.ProductCode.focus_set()
+
 
     # database integration
     def get_available_stock(self):
         stocks = ()
-        x = '''select product_code, product_name, quantity  
-        from stock_purchase_history;'''
+        x = '''select product_code, product_name, quantity, mrp, price  
+        from available_stock;'''
         c.execute(x)
         for i in c.fetchall():
             stocks += (i,)
-        print(stocks)
+        # print(stocks)
 
         return stocks
 
     def get_stock_purchase_history(self):
         history = ()
-        x = '''select date_of_purchase, product_code, product_name, quantity   
+        x = '''select date_of_purchase, product_code, product_name, quantity, mrp, price   
         from stock_purchase_history;'''
         c.execute(x)
         for i in c.fetchall():
@@ -260,24 +267,41 @@ class stocks(object):
 
         return history
 
-    # focus
 
-    def BarCode_focus(self):
-        self.ProductCode.focus_set()
+    def productcode_bind_function(self, event):
+        self.ProductName.focus_set()
 
-    def barcode_bind_function(self, event):
-        pass
 
     def product_name_bind_function(self, event):
-        pass
+        self.quantity.focus_set()
+
 
     def quantity_bind_function(self, event):
-        pass
+        self.Mrp.focus_set()
+
+    def mrp_bind_function(self, event):
+        self.PricePerQuantity.focus_set()
 
     def price_per_quantity_bind_function(self, event):
-        pass
+        self.add_button()
 
     def add_button(self):
+        # #update database
+        # quantity=int(self.Quantity.get())
+        # product_code=int(self.ProductCode.get())
+        # product_name=self.ProductName.get()
+        # date=self.Date.get()
+        # mrp=int(self.Mrp.get())
+        # price=int(self.PricePerQuantity.get())
+
+        # x='''update available_stock
+        # set quantity= quantity+?
+        # where product_code=?'''
+        # c.execute(x,(quantity,product_code))
+        # x1='''insert into stock_purchase_history
+        # (product_code, product_name, quantity, date_of_purchase, price, mrp)
+        # values (?,?,?,?,?,?)'''
+        # c.execute(x1,(product_code, product_name, quantity, date, price, mrp))
         pass
 
 
