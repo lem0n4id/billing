@@ -35,11 +35,12 @@ class invoice(object):
         self.frame.pack(side=tk.TOP, fill=tk.X)
 
         self.labelframe1 = tk.LabelFrame(
-            self.frame, text="invoice")
+            self.frame, text="billing")
         self.labelframe1.pack(side=tk.LEFT, fill=tk.BOTH)
 
         self.labelframeN1 = tk.LabelFrame(self.frame, text="customer details")
         self.labelframeN1.pack(side=tk.LEFT, fill=tk.BOTH)
+    
 
         # ----------------------------------buttons in Employyee details(logout)
 
@@ -67,8 +68,10 @@ class invoice(object):
 
         tk.Button(self.labelframe1, text='Add', command=self.bill_add).grid(
             row=1, column=0, sticky=tk.W+tk.N)
-        tk.Button(self.labelframe1, text='Remove', command=self.bill_remove).grid(
-            row=1, column=1, sticky=tk.W+tk.N)
+
+        #line 318
+        # tk.Button(self.labelframe1, text='Remove', command=self.bill_remove).grid(
+        #     row=1, column=1, sticky=tk.W+tk.N)
 
         # ----------------------------------labels in invoice(PRODUCT CODE , PRODUCT NAME, QUANTITY)
 
@@ -194,6 +197,26 @@ class invoice(object):
 
         self.PhoneNo_focus()
 
+        #--------------------------total
+        self.labelframeN2 = tk.LabelFrame(self.frame, text="total")
+        self.labelframeN2.pack(side=tk.LEFT, fill=tk.BOTH)
+
+        tk.Label(self.labelframeN2, text='Total ').grid(
+            row=0, column=0, sticky=tk.W+tk.N)
+        
+        self.total = tk.IntVar()
+        self.inttotal = 0
+
+        self.Total = tk.Entry(
+            self.labelframeN2, textvariable=self.total)
+        self.total.set(self.inttotal)
+        self.Total.grid(row=0, column=1, sticky=tk.W+tk.N)
+
+        tk.Button(self.labelframeN2, text='Pay', command=self.thank_you_window).grid(
+            row=1, column=1, sticky=tk.W+tk.N)
+
+
+
     # database integration
     def get_name(self, emp_id):
         x = '''select name from emp_details 
@@ -270,6 +293,8 @@ class invoice(object):
         c.execute(x,(productcode,))
         mrp, price= c.fetchone()
         total=price*quantity
+        self.inttotal+=total
+        self.total.set(self.inttotal)
 
         item = (productcode, productname, mrp, price, quantity, total)
         self.invoiceList.insert('', 'end', iid=self.iid,
@@ -290,23 +315,26 @@ class invoice(object):
 
         self.id += 1
         self.iid += 1
-
-    def bill_remove(self):
-        row_id = int(self.invoiceList.focus())
+    #removing this bill_remove button because unable to delete 2nd or higher entry in the treeview
+    # def bill_remove(self):
+    #     row_id = int(self.invoiceList.focus())
         
-        for i in self.items_billed:
-            if self.items_billed[1] == row_id:
-                product_code, quantity = self.items_billed[0][0], self.items_billed[0][4]
+    #     for i in self.items_billed:
+    #         if self.items_billed[1] == row_id:
+    #             product_code, quantity, total= self.items_billed[0][0], self.items_billed[0][4], self.items_billed[0][5]
         
-        x='''update available_stock
-            set quantity = quantity + ?
-            where product_code = ?'''
-        c.execute(x,(quantity, product_code))
-        db.commit()
+    #     x='''update available_stock
+    #         set quantity = quantity + ?
+    #         where product_code = ?'''
+    #     c.execute(x,(quantity, product_code))
+    #     db.commit()
 
-        self.iid-=1
-        self.id-=1
-        self.invoiceList.delete(row_id)
+    #     self.inttotal-=total
+    #     self.total.set(self.inttotal)
+
+    #     self.iid-=1
+    #     self.id-=1
+    #     self.invoiceList.delete(row_id)
 
 
 
@@ -348,6 +376,12 @@ class invoice(object):
         self.email_address.set('')
         self.membership_id.set('N/A')
 
+    def thank_you_window(self):
+        self.mas1 = Toplevel(self.mas)
+        self.mas1.title('window') 
+        tk.Label(self.mas1, text='Thank you for shopping!').grid(
+            row=0, column=0, sticky=tk.W+tk.N)
+        tk.Button(self.mas1,text='Okay!', command=self.mas1.quit).grid(row=1, column=0, sticky=tk.W+tk.N)
 
 if __name__ == "__main__":
     root = tk.Tk()
