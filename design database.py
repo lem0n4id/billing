@@ -71,7 +71,13 @@ values (90162602, "red bull 250ml", 120, "2020-10-25"),
 insert into available_stock
 (product_code, product_name, quantity)
 values (90162602, "red bull 250ml", 120),
-(8515135837011, "colgate maxfresh toothpaste", 200);'''
+(8515135837011, "colgate maxfresh toothpaste", 200);''',
+                   '''
+insert into customer_details
+(m_id, name, phone_no, email_address)
+values (000001, 'ramprasad', 1124578945, 'ramprasad111@gmail.com'),
+(000002, 'dev', 1547649164, 'dev64@gmail.com')
+                '''
                    )
 # for i in insert_commands:
 #     c.execute(i)
@@ -116,3 +122,8 @@ values (90162602, "red bull 250ml", 120),
 # #inserting into available_stock
 # c.execute(insert_commands[3])
 # db.commit()
+
+# #inserting into customer_details
+# c.execute(insert_commands[4])
+# db.commit()
+select_query('select * from customer_details')
