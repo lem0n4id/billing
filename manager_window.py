@@ -96,10 +96,16 @@ class stocks(object):
         # self.invoiceList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
         self.invoiceList.pack(side=tk.LEFT, fill=tk.BOTH)
 
+        self.id_1 = 1
+        self.iid_1 = 0
+
         self.stocks = self.get_available_stock()
         for i in self.stocks:
 
-            self.invoiceList.insert('', 'end', values=(i))
+            self.invoiceList.insert('', 'end', iid=self.iid_1, values=(i))
+
+            self.id_1 += 1
+            self.iid_1 += 1
 
         barx3.config(command=self.invoiceList.xview)
         bary3.config(command=self.invoiceList.yview)
@@ -115,6 +121,7 @@ class stocks(object):
         tab3 = ttk.Frame(tabcontrol)
 
         tab = ttk.Frame(tabcontrol)
+
         # ----------------------------------labelframes(invoice)
         self.labelframe2 = tk.LabelFrame(tab, text="Add to Stocks")
         self.labelframe2.pack(side=tk.TOP, fill=tk.X)
@@ -207,10 +214,16 @@ class stocks(object):
         # self.invoiceList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
         self.invoiceList.pack(side=tk.LEFT, fill=tk.BOTH)
 
+        self.id_2 = 1
+        self.iid_2 = 0
+
         self.history = self.get_stock_purchase_history()
         for i in self.history:
 
-            self.invoiceList.insert('', 'end', values=(i))
+            self.invoiceList.insert('', 'end', iid=self.iid_2, values=(i))
+
+            self.id_2 += 1
+            self.iid_2 += 1
 
         barx3.config(command=self.invoiceList.xview)
         bary3.config(command=self.invoiceList.yview)
