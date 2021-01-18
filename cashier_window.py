@@ -40,7 +40,6 @@ class invoice(object):
 
         self.labelframeN1 = tk.LabelFrame(self.frame, text="customer details")
         self.labelframeN1.pack(side=tk.LEFT, fill=tk.BOTH)
-    
 
         # ----------------------------------buttons in Employyee details(logout)
 
@@ -69,9 +68,9 @@ class invoice(object):
         tk.Button(self.labelframe1, text='Add', command=self.bill_add).grid(
             row=1, column=0, sticky=tk.W+tk.N)
 
-        #line 318
-        # tk.Button(self.labelframe1, text='Remove', command=self.bill_remove).grid(
-        #     row=1, column=1, sticky=tk.W+tk.N)
+        # line 318
+        tk.Button(self.labelframe1, text='Remove', command=self.bill_remove).grid(
+            row=1, column=1, sticky=tk.W+tk.N)
 
         # ----------------------------------labels in invoice(PRODUCT CODE , PRODUCT NAME, QUANTITY)
 
@@ -165,7 +164,7 @@ class invoice(object):
         # -----------------------------------treeview----------------------------
         invoice_list = ['Sr no', 'Product Code', 'Product Name',
                         'MRP', 'Price', 'Quantity', 'Total']
-        self.items_billed = ()
+        self.items_billed = []
 
         listbar = tk.Frame(self.mas)
 
@@ -184,7 +183,7 @@ class invoice(object):
         # self.invoiceList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
         self.invoiceList.pack(side=tk.LEFT, fill=tk.BOTH)
 
-        self.id = 1
+        self.id = 0
         self.iid = 0
 
         barx3.config(command=self.invoiceList.xview)
@@ -197,13 +196,13 @@ class invoice(object):
 
         self.PhoneNo_focus()
 
-        #--------------------------total
+        # --------------------------total
         self.labelframeN2 = tk.LabelFrame(self.frame, text="total")
         self.labelframeN2.pack(side=tk.LEFT, fill=tk.BOTH)
 
         tk.Label(self.labelframeN2, text='Total ').grid(
             row=0, column=0, sticky=tk.W+tk.N)
-        
+
         self.total = tk.IntVar()
         self.inttotal = 0
 
@@ -215,9 +214,8 @@ class invoice(object):
         tk.Button(self.labelframeN2, text='Pay', command=self.thank_you_window).grid(
             row=1, column=1, sticky=tk.W+tk.N)
 
-
-
     # database integration
+
     def get_name(self, emp_id):
         x = '''select name from emp_details 
         where emp_id = ?'''
@@ -234,22 +232,22 @@ class invoice(object):
 
     # invoice
     def get_productcode(self):
-        x='''select product_name, quantity from available_stock
+        x = '''select product_name, quantity from available_stock
             where product_code=?'''
         product_code = int(self.ProductCode.get())
-        c.execute(x,(product_code,))
+        c.execute(x, (product_code,))
         try:
             product_name, quantity_available = c.fetchall()[0]
             self.product_name.set(product_name)
             self.ProductName.focus_set()
             return (product_code, product_name, int(quantity_available))
         except:
-            tkMessageBox.showinfo('Notice', 'please enter a valid product code')
-            return (0,0,0)
+            tkMessageBox.showinfo(
+                'Notice', 'please enter a valid product code')
+            return (0, 0, 0)
 
     def productcode_bind_function(self, event):
         product_code, product_name, quantity_available = self.get_productcode()
-
 
     def product_name_bind_function(self, event):
         self.Quantity.focus_set()
@@ -263,44 +261,39 @@ class invoice(object):
         try:
 
             if quantity_available - int(self.Quantity.get()) < 0:
+                x = 0
                 raise ArithmeticError
             else:
-                
-                x='''update available_stock
-                set quantity = quantity - ?
-                where product_code = ?'''
-                c.execute(x,(int(self.Quantity.get()),product_code))
-                db.commit()
-                #self.
-                
+                x = 1
+                self.ProductCode.focus_get()
                 self.bill_add()
         except:
-            tkMessageBox.showinfo('Notice', 'please enter a valid quantity,stock not available')
-    
+            tkMessageBox.showinfo(
+                'Notice', f'error{x} please enter a valid quantity,stock not available')
+
     def retrive_product_details():
-        x='''select '''
+        x = '''select '''
         return
-        
 
     def bill_add(self):
+        self.id += 1
+        self.iid += 1
         # add into treeview(productcode, productname,mrp,price,quantity,total)
-        productcode=int(self.ProductCode.get().strip().lower())
-        productname=self.ProductName.get().strip().lower()
-        quantity=int(self.Quantity.get().strip().lower())
+        productcode = int(self.ProductCode.get().strip().lower())
+        productname = self.ProductName.get().strip().lower()
+        quantity = int(self.Quantity.get().strip().lower())
 
-        x='''select mrp,price from available_stock
+        x = '''select mrp,price from available_stock
         where product_code = ?'''
-        c.execute(x,(productcode,))
-        mrp, price= c.fetchone()
-        total=price*quantity
-        self.inttotal+=total
+        c.execute(x, (productcode,))
+        mrp, price = c.fetchone()
+        total = price*quantity
+        self.inttotal += total
         self.total.set(self.inttotal)
 
         item = (productcode, productname, mrp, price, quantity, total)
         self.invoiceList.insert('', 'end', iid=self.iid,
                                 values=((self.id,)+item))
-
-        
 
         # clear entries
         self.ProductCode.delete(0, tk.END)
@@ -311,34 +304,34 @@ class invoice(object):
         self.product_name.set('')
         self.quantity.set('')
 
-        self.items_billed += (item, self.iid)
+        self.items_billed.append([item, self.iid])
 
-        self.id += 1
-        self.iid += 1
-    #removing this bill_remove button because unable to delete 2nd or higher entry in the treeview
-    # def bill_remove(self):
-    #     row_id = int(self.invoiceList.focus())
-        
-    #     for i in self.items_billed:
-    #         if self.items_billed[1] == row_id:
-    #             product_code, quantity, total= self.items_billed[0][0], self.items_billed[0][4], self.items_billed[0][5]
-        
-    #     x='''update available_stock
-    #         set quantity = quantity + ?
-    #         where product_code = ?'''
-    #     c.execute(x,(quantity, product_code))
-    #     db.commit()
+    # removing this bill_remove button because unable to delete 2nd or higher entry in the treeview
 
-    #     self.inttotal-=total
-    #     self.total.set(self.inttotal)
+    def bill_remove(self):
+        row_id = int(self.iid)
+        try:
 
-    #     self.iid-=1
-    #     self.id-=1
-    #     self.invoiceList.delete(row_id)
+            for i in range(0, (len(self.items_billed)+1)):
+                # print(i)
+                # print('self.items_billed[i][1]',self.items_billed[i][1],type(self.items_billed[i][1]))
+                # print('row_id',row_id,type(row_id))
 
+                if self.items_billed[i][1] == row_id:
+                    total = self.items_billed[0][0][5]
+                    break
 
+            self.inttotal -= total
+            self.total.set(self.inttotal)
+
+            self.iid -= 1
+            self.id -= 1
+            self.invoiceList.delete(row_id)
+        except:
+            tkMessageBox.showinfo('Notice', 'error- no entry to remove')
 
     # customer details
+
     def phone_no_bind_function(self, event):
         x = '''
         select name, email_address, m_id from customer_details where phone_no = ?'''
@@ -377,11 +370,37 @@ class invoice(object):
         self.membership_id.set('N/A')
 
     def thank_you_window(self):
+
+        for i in range(len(self.items_billed)):
+            product_code = self.items_billed[i][0][0]
+            product_name = self.items_billed[i][0][1]
+            quantity = self.items_billed[i][0][4]
+
+            x = '''select product_name, quantity from available_stock
+            where product_code=?'''
+            c.execute(x, (product_code,))
+            try:
+                product_name, quantity_available = c.fetchall()[0]
+                if (quantity_available - int(quantity)) < 0:
+                    raise ArithmeticError
+                else:
+                    x = '''update available_stock
+                    set quantity = quantity - ?
+                    where product_code = ?'''
+                    c.execute(x, (quantity, product_code))
+                    db.commit()
+
+            except:
+                tkMessageBox.showinfo(
+                    'Notice', f'not enough stock of {product_name}')
+
         self.mas1 = Toplevel(self.mas)
-        self.mas1.title('window') 
+        self.mas1.title('window')
         tk.Label(self.mas1, text='Thank you for shopping!').grid(
             row=0, column=0, sticky=tk.W+tk.N)
-        tk.Button(self.mas1,text='Okay!', command=self.mas1.quit).grid(row=1, column=0, sticky=tk.W+tk.N)
+        tk.Button(self.mas1, text='Okay!', command=self.mas1.quit).grid(
+            row=1, column=0, sticky=tk.W+tk.N)
+
 
 if __name__ == "__main__":
     root = tk.Tk()

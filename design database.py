@@ -119,4 +119,24 @@ values (000001, 'ramprasad', 1124578945, 'ramprasad111@gmail.com'),
 # c.execute(x)
 # for i in c.fetchall():
 #     print(i)
-select_query('select * from available_stock')
+product_code, product_name, quantity, date, price, mrp = 90162603, "red bull 500ml", 120,'01/18/2021', 100, 120
+# x1='''insert into stock_purchase_history
+#         (product_code, product_name, quantity, date_of_purchase, price, mrp)
+#         values (?,?,?,?,?,?)'''
+# c.execute(x1,(product_code, product_name, quantity, date, price, mrp))
+# x='''update available_stock
+#         set quantity= quantity+?
+#         where product_code=?'''
+# c.execute(x,(quantity,product_code))
+# db.commit()
+# x='''update available_stock
+#         set quantity= quantity+?
+#         where product_code=?'''
+# c.execute(x,(quantity,product_code))
+# db.commit()
+# select_query('select * from available_stock')
+x='''select product_code from available_stock'''
+c.execute(x)
+product_codes=c.fetchall()
+print(product_codes[0][0])
+

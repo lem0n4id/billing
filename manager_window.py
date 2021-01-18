@@ -60,9 +60,6 @@ class manager_win(object):
 
 
 class stocks(object):
-    '''
-    retail price=wholesale price/(1-markup percentage[in decimal]) *markup percentage=profit margin
-    '''
 
     def __init__(self, master, user=''):
         self.user = user
@@ -107,7 +104,7 @@ class stocks(object):
         bary3.config(command=self.EmployyeeList.yview)
 
         self.EmployyeeList.config(xscrollcommand=barx3.set,
-                                yscrollcommand=bary3.set)
+                                  yscrollcommand=bary3.set)
 
         listbar.pack(fill=tk.X)
 
@@ -193,7 +190,8 @@ class stocks(object):
 
         self.PricePerQuantity = tk.Entry(
             self.labelframe2, textvariable=self.price_per_quantity)
-        self.PricePerQuantity.bind("<Return>", self.price_per_quantity_bind_function)
+        self.PricePerQuantity.bind(
+            "<Return>", self.price_per_quantity_bind_function)
         self.price_per_quantity.set('')
         self.PricePerQuantity.grid(row=2, column=3, sticky=tk.W+tk.N)
 
@@ -235,7 +233,7 @@ class stocks(object):
         bary3.config(command=self.EmployyeeList.yview)
 
         self.EmployyeeList.config(xscrollcommand=barx3.set,
-                                yscrollcommand=bary3.set)
+                                  yscrollcommand=bary3.set)
 
         listbar.pack(fill=tk.X)
 
@@ -243,8 +241,13 @@ class stocks(object):
         tabcontrol.pack(expand=1, fill="both")
         self.ProductCode.focus_set()
 
-
     # database integration
+
+    def update_insert_stock_purchase_history(self):
+        history = self.get_stock_purchase_history()
+        self.EmployyeeList.insert(
+            '', 'end', iid=self.iid_2, values=(history[-1]))
+
     def get_available_stock(self):
         stocks = ()
         x = '''select product_code, product_name, quantity, mrp, price  
@@ -267,14 +270,11 @@ class stocks(object):
 
         return history
 
-
     def productcode_bind_function(self, event):
         self.ProductName.focus_set()
 
-
     def product_name_bind_function(self, event):
-        self.quantity.focus_set()
-
+        self.Quantity.focus_set()
 
     def quantity_bind_function(self, event):
         self.Mrp.focus_set()
@@ -285,28 +285,42 @@ class stocks(object):
     def price_per_quantity_bind_function(self, event):
         self.add_button()
 
-    def add_button(self):
-        # #update database
-        # quantity=int(self.Quantity.get())
-        # product_code=int(self.ProductCode.get())
-        # product_name=self.ProductName.get()
-        # date=self.Date.get()
-        # mrp=int(self.Mrp.get())
-        # price=int(self.PricePerQuantity.get())
+    def product_codes(self):
+        x = '''select product_code from available_stock'''
+        c.execute(x)
+        product_codes = c.fetchall()
+        return product_codes
 
-        # x='''update available_stock
-        # set quantity= quantity+?
-        # where product_code=?'''
-        # c.execute(x,(quantity,product_code))
-        # x1='''insert into stock_purchase_history
-        # (product_code, product_name, quantity, date_of_purchase, price, mrp)
-        # values (?,?,?,?,?,?)'''
-        # c.execute(x1,(product_code, product_name, quantity, date, price, mrp))
-        pass
+    def add_button(self):
+        # update database
+        quantity = int(self.Quantity.get())
+        product_code = int(self.ProductCode.get())
+        product_name = self.ProductName.get()
+        date = self.Date.get()
+        mrp = int(self.Mrp.get())
+        price = int(self.PricePerQuantity.get())
+
+        # product_codes=self.product_codes()
+        # for i in product_codes:
+
+        # if product_code  in product_codes: insert into stock_purchase_history ,update available_stock
+        # else: insert into stock_purchase_history ,insert into available_stock
+
+        x = '''update available_stock
+        set quantity= quantity+?
+        where product_code=?'''
+        c.execute(x, (quantity, product_code))
+        x1 = '''insert into stock_purchase_history
+        (product_code, product_name, quantity, date_of_purchase, price, mrp)
+        values (?,?,?,?,?,?)'''
+        c.execute(x1, (product_code, product_name, quantity, date, price, mrp))
+        db.commit()
+        self.update_insert_stock_purchase_history()
+
 
 class EmployyeeDetails(object):
-    def __init__(self,master,user=''):
-        self.user=user
+    def __init__(self, master, user=''):
+        self.user = user
         self.mas = tk.Toplevel(master)
         self.mas.title('Employyee Details')
 
@@ -319,7 +333,8 @@ class EmployyeeDetails(object):
         self.mas['menu'] = menubar
 
         # -----------------------------------treeview(employyee details)----------------------------
-        invoice_list = ['emp_id', 'name', 'desgn', 'sex', 'age', 'address', 'phone_no', 'email_address', 'date_joined']
+        invoice_list = ['emp_id', 'name', 'desgn', 'sex', 'age',
+                        'address', 'phone_no', 'email_address', 'date_joined']
         listbar = tk.Frame(self.mas)
 
         bary3 = tk.Scrollbar(listbar)
@@ -336,28 +351,26 @@ class EmployyeeDetails(object):
         self.EmployyeeList['height'] = 20
         self.EmployyeeList.pack(side=tk.LEFT, fill=tk.BOTH)
 
-
         self.employyees = self.get_details()
         for i in self.employyees:
 
             self.EmployyeeList.insert('', 'end',  values=(i))
 
-
         barx3.config(command=self.EmployyeeList.xview)
         bary3.config(command=self.EmployyeeList.yview)
 
         self.EmployyeeList.config(xscrollcommand=barx3.set,
-                                yscrollcommand=bary3.set)
+                                  yscrollcommand=bary3.set)
 
         listbar.pack(fill=tk.X)
-    
+
     def get_details(self):
-        x='''select emp_id, name, desgn, sex, age, address, phone_no, email_address, date_joined
+        x = '''select emp_id, name, desgn, sex, age, address, phone_no, email_address, date_joined
          from emp_details'''
         c.execute(x)
         return c.fetchall()
 
-        
+
 if __name__ == "__main__":
     root = tk.Tk()
     manager = manager_win(root)
