@@ -70,7 +70,7 @@ class loginPage(object):
         if len(self.usernm) == 0 or len(self.passwd) == 0 or not self.usernm in self.attn:
             tkMessageBox.showinfo('Notice', 'please check your username')
             self.clear()
-            self.usernm.focus_set()
+            self.username.focus_set()
             return
         else:
             if self.usernm in self.manager_usernames:

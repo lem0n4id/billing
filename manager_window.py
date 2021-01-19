@@ -16,7 +16,8 @@ class manager_win(object):
         self.mas = Toplevel(self.master)
         self.mas.title('Manage store')
 
-        # ----------------------------------menubar(File[Exit], About[About Me])
+        # ----------------------------------menubar(File[Exit])
+
         menubar = tk.Menu(self.mas)
         filemenu = tk.Menu(menubar, tearoff=0)
         filemenu.add_command(label='Exit', command=master.quit)
@@ -24,33 +25,24 @@ class manager_win(object):
 
         self.mas['menu'] = menubar
 
-        # labels
+        # ----------------------------------label
+
         tk.Label(self.mas, text='Master Functions', font=(
             "Times", "12", "bold")).grid(row=0, column=0)
 
-        # buttons
+        # ----------------------------------buttons
+
         tk.Button(self.mas, text='Stocks', command=self.Stocks_button).grid(
             row=1, column=0, sticky=tk.N+tk.W, padx=10, pady=10, ipadx=36, ipady=5)
-        # tk.Button(self.mas, text='Sales', command=self.Sales_button).grid(
-        #     row=1, column=1, sticky=tk.N+tk.W, padx=10, pady=10, ipadx=36, ipady=5)
+
         tk.Button(self.mas, text='Employyee details', command=self.Employyee_details_button).grid(
             row=1, column=1, sticky=tk.N+tk.W, padx=10, pady=10, ipadx=5, ipady=5)
-        # tk.Button(self.mas, text='Customer details', command=self.Customer_details_button).grid(
-        #     row=2, column=1, sticky=tk.N+tk.W, padx=10, pady=10, ipadx=5, ipady=5)
 
     def Stocks_button(self):
         stock_window = stocks(self.master)
 
-    def Sales_button(self):
-        # sales_window = sales(self.master)
-        pass
-
     def Employyee_details_button(self):
         employyee_details = EmployyeeDetails(self.master)
-        pass
-
-    def Customer_details_button(self):
-        # customer_details = CustomerDetails(self.master)
         pass
 
 
@@ -65,7 +57,8 @@ class stocks(object):
 
         frame = ttk.Frame(tabcontrol)
 
-        # -----------------------------------treeview(stock available)----------------------------
+        # ----------------------------------treeview(stock available)
+
         invoice_list = ['Product Code', 'Product Name',
                         'Quantity', 'Mrp', 'Price']
         listbar = tk.Frame(frame)
@@ -86,23 +79,22 @@ class stocks(object):
 
         self.id_1 = 1
         self.iid_1 = 0
-        self.available_stock_inserted=[]
+        self.available_stock_inserted = []
 
         self.stocks = self.get_available_stock()
         for i in self.stocks:
 
             self.StockList.insert('', 'end', iid=self.iid_1, values=(i))
-            self.available_stock_inserted.append([i,self.iid_1])
+            self.available_stock_inserted.append([i, self.iid_1])
 
             self.id_1 += 1
             self.iid_1 += 1
-        print(self.available_stock_inserted)
 
         barx3.config(command=self.StockList.xview)
         bary3.config(command=self.StockList.yview)
 
         self.StockList.config(xscrollcommand=barx3.set,
-                                  yscrollcommand=bary3.set)
+                              yscrollcommand=bary3.set)
 
         listbar.pack(fill=tk.X)
 
@@ -113,33 +105,37 @@ class stocks(object):
 
         tab = ttk.Frame(tabcontrol)
 
-        # ----------------------------------labelframes(invoice)
+        # ----------------------------------labelframes(Add to Stocks)
+
         self.labelframe2 = tk.LabelFrame(tab, text="Add to Stocks")
         self.labelframe2.pack(side=tk.TOP, fill=tk.X)
 
         # ----------------------------------buttons(Add)
+
         tk.Button(self.labelframe2, text='Add', command=self.add_button).grid(
             row=3, column=1, sticky=tk.W+tk.N)
 
         # ----------------------------------labels(PRODUCT CODE , PRODUCT NAME, QUANTITY LEFT, Price per quantity)
+
         tk.Label(self.labelframe2, text='Date').grid(
             row=0, column=0, sticky=tk.W+tk.N)
+
         tk.Label(self.labelframe2, text='Product code ').grid(
             row=1, column=0, sticky=tk.W+tk.N)
+
         tk.Label(self.labelframe2, text='Product name').grid(
             row=1, column=2, sticky=tk.W+tk.N)
+
         tk.Label(self.labelframe2, text='Quantity').grid(
             row=1, column=4, sticky=tk.W+tk.N)
+
         tk.Label(self.labelframe2, text='Mrp').grid(
             row=2, column=0, sticky=tk.W+tk.N)
+
         tk.Label(self.labelframe2, text='Price per quantity').grid(
             row=2, column=2, sticky=tk.W+tk.N)
-        # ----------------------------------entry(PRODUCT CODE, PRODUCT NAME, QUANTITY LEFT, Price per quantity) all are StringVar
 
-        '''
-        important note. we have to bind
-        before you pack or use grid to place the widgit
-        '''
+        # ----------------------------------entry(PRODUCT CODE, PRODUCT NAME, QUANTITY LEFT, Price per quantity)
 
         self.date = tk.StringVar()
 
@@ -148,7 +144,6 @@ class stocks(object):
             datetime.date.today(), "%m/%d/%Y")
 
         self.Date = tk.Entry(self.labelframe2, textvariable=self.date)
-        #self.Date.bind("<Return>", self.Print1)
         self.date.set(formatted_date)
         self.Date.grid(row=0, column=1, sticky=tk.W+tk.N)
 
@@ -196,7 +191,7 @@ class stocks(object):
         tabcontrol.add(tab, text='add stock purchase details')
         tabcontrol.pack(expand=1, fill="both")
 
-        # -----------------------------------treeview(purchase history)----------------------------
+        # ----------------------------------treeview(purchase history)
         invoice_list = ['date', 'Product Code', 'Product Name',
                         'Quantity', 'Mrp', 'Price Per Quantity']
         listbar = tk.Frame(tab3)
@@ -213,16 +208,17 @@ class stocks(object):
             self.PurchaseHistoryList.column(i, width=200)
         self.PurchaseHistoryList.column(1, width=100)
         self.PurchaseHistoryList['height'] = 20
-        # self.PurchaseHistoryList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
         self.PurchaseHistoryList.pack(side=tk.LEFT, fill=tk.BOTH)
 
         self.id_2 = 1
         self.iid_2 = 0
 
         self.history = self.get_stock_purchase_history()
+
         for i in self.history:
 
-            self.PurchaseHistoryList.insert('', 'end', iid=self.iid_2, values=(i))
+            self.PurchaseHistoryList.insert(
+                '', 'end', iid=self.iid_2, values=(i))
 
             self.id_2 += 1
             self.iid_2 += 1
@@ -231,15 +227,14 @@ class stocks(object):
         bary3.config(command=self.PurchaseHistoryList.yview)
 
         self.PurchaseHistoryList.config(xscrollcommand=barx3.set,
-                                  yscrollcommand=bary3.set)
+                                        yscrollcommand=bary3.set)
 
         listbar.pack(fill=tk.X)
 
         tabcontrol.add(tab3, text='purchase history')
         tabcontrol.pack(expand=1, fill="both")
-        self.ProductCode.focus_set()
 
-    # database integration
+        self.ProductCode.focus_set()
 
     def get_available_stock(self):
         stocks = ()
@@ -248,7 +243,6 @@ class stocks(object):
         c.execute(x)
         for i in c.fetchall():
             stocks += (i,)
-        print("stocks\n",stocks)
 
         return stocks
 
@@ -259,51 +253,50 @@ class stocks(object):
         c.execute(x)
         for i in c.fetchall():
             history += (i,)
-        print("history\n",history)
 
         return history
-    
+
     def insert_available_stock(self):
         stocks = self.get_available_stock()
-        self.StockList.insert(
-            '', 'end', iid=self.iid_2, values=(stocks[-1]))
+        self.StockList.insert('', 'end', iid=self.iid_2, values=(stocks[-1]))
 
     def insert_stock_purchase_history(self):
         history = self.get_stock_purchase_history()
         self.PurchaseHistoryList.insert(
             '', 'end', iid=self.iid_2, values=(history[-1]))
-    
+
     def update_available_stock(self, product_code, quantity):
-        row_id=0
+        row_id = 0
+
         for i in self.available_stock_inserted:
             if i[0][0] == product_code:
                 row_id = i[1]
-                product_name=i[0][1]
+                product_name = i[0][1]
                 Quantity = i[0][2]
-                mrp=i[0][3]
-                price=i[0][4]
-        self.StockList.delete(row_id)
-        Quantity+=quantity
-        self.StockList.insert(
-            '', 'end', iid=row_id, values=(product_code, product_name,Quantity, mrp,price))
+                mrp = i[0][3]
+                price = i[0][4]
 
+        self.StockList.delete(row_id)
+        Quantity += quantity
+
+        self.StockList.insert('', 'end', iid=row_id, values=(
+            product_code, product_name, Quantity, mrp, price))
 
     def productcode_bind_function(self, event):
-        product_code=  int(self.ProductCode.get())
+
+        product_code = int(self.ProductCode.get())
         for i in self.available_stock_inserted:
-            print('i[0][0]',i[0][0])
             if i[0][0] == product_code:
-                product_name=i[0][1]
+                product_name = i[0][1]
                 Quantity = i[0][2]
-                mrp=i[0][3]
-                price=i[0][4]
-                
+                mrp = i[0][3]
+                price = i[0][4]
+
                 self.product_name.set(product_name)
                 self.mrp.set(str(mrp))
                 self.price_per_quantity.set(str(price))
                 self.Quantity.focus_set()
                 return
-
 
         self.ProductName.focus_set()
 
@@ -324,7 +317,7 @@ class stocks(object):
         c.execute(x)
         product_codes = c.fetchall()
         return product_codes
-    
+
     def clear_enteries(self):
         self.ProductCode.delete(0, tk.END)
         self.ProductName.delete(0, tk.END)
@@ -338,10 +331,7 @@ class stocks(object):
         self.mrp.set('')
         self.price_per_quantity.set('')
 
-
-
     def add_button(self):
-        # update database
         quantity = int(self.Quantity.get())
         product_code = int(self.ProductCode.get())
         product_name = self.ProductName.get()
@@ -349,39 +339,49 @@ class stocks(object):
         mrp = int(self.Mrp.get())
         price = int(self.PricePerQuantity.get())
 
-        product_codes=self.product_codes()
-        codes=[]
+        product_codes = self.product_codes()
+        codes = []
         for i in product_codes:
             codes.append(i[0])
-        
 
-        if product_code  in codes: #insert into stock_purchase_history ,update available_stock
+        if product_code in codes:  # insert into stock_purchase_history ,update available_stock
+
             x = '''update available_stock
             set quantity= quantity+?
             where product_code=?'''
             c.execute(x, (quantity, product_code))
+
             x1 = '''insert into stock_purchase_history
             (product_code, product_name, quantity, date_of_purchase, price, mrp)
             values (?,?,?,?,?,?)'''
-            c.execute(x1, (product_code, product_name, quantity, date, price, mrp))
+            c.execute(x1, (product_code, product_name,
+                           quantity, date, price, mrp))
+
             db.commit()
+
             self.update_available_stock(product_code, quantity)
             self.insert_stock_purchase_history()
+
             self.clear_enteries()
-        else: #insert into stock_purchase_history ,insert into available_stock
-            x='''insert into available_stock
+        else:  # insert into stock_purchase_history ,insert into available_stock
+
+            x = '''insert into available_stock
             (product_code, product_name, quantity, price, mrp)
             values(?,?,?,?,?)'''
-            c.execute(x,(product_code, product_name, quantity, price, mrp))
-            x1='''insert into stock_purchase_history
+            c.execute(x, (product_code, product_name, quantity, price, mrp))
+
+            x1 = '''insert into stock_purchase_history
             (product_code, product_name, quantity, date_of_purchase, price, mrp)
             values (?,?,?,?,?,?)'''
-            c.execute(x1, (product_code, product_name, quantity, date, price, mrp))
+            c.execute(x1, (product_code, product_name,
+                           quantity, date, price, mrp))
+
             db.commit()
+
             self.insert_available_stock()
             self.insert_stock_purchase_history()
+
             self.clear_enteries()
-        
 
 
 class EmployyeeDetails(object):
@@ -390,7 +390,7 @@ class EmployyeeDetails(object):
         self.mas = tk.Toplevel(master)
         self.mas.title('Employyee Details')
 
-        # ----------------------------------menubar(File[Exit], , About[About Me])
+        # ----------------------------------menubar(File[Exit])
         menubar = tk.Menu(self.mas)
         filemenu = tk.Menu(menubar, tearoff=0)
         filemenu.add_command(label='Exit', command=master.quit)
@@ -398,7 +398,7 @@ class EmployyeeDetails(object):
 
         self.mas['menu'] = menubar
 
-        # -----------------------------------treeview(employyee details)----------------------------
+        # ----------------------------------treeview(employyee details)
         invoice_list = ['emp_id', 'name', 'desgn', 'sex', 'age',
                         'address', 'phone_no', 'email_address', 'date_joined']
         listbar = tk.Frame(self.mas)
@@ -431,15 +431,18 @@ class EmployyeeDetails(object):
         listbar.pack(fill=tk.X)
 
     def get_details(self):
+
         x = '''select emp_id, name, desgn, sex, age, address, phone_no, email_address, date_joined
          from emp_details'''
         c.execute(x)
+
         return c.fetchall()
 
 
 if __name__ == "__main__":
     root = tk.Tk()
     manager = manager_win(root)
+    
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
     window_width = 325
@@ -447,4 +450,5 @@ if __name__ == "__main__":
     x = (screen_width/2) - (window_width/2)
     y = (screen_height/2) - (window_height/2)
     root.geometry(f'{window_width}x{window_height}+{int(x)}+{int(y)}')
+
     tk.mainloop()
