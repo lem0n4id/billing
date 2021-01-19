@@ -52,7 +52,6 @@ class loginPage(object):
         self.clearButton.grid(row=3, column=2)
 
     def loginit(self, event):
-        # print(self.password.get())
         self.login()
         self.clear()
 
@@ -121,14 +120,12 @@ class loginPage(object):
         attn = []  # username/usernames
         manager_usernames = []
         cashier_usernames = []
-        # print(self.managers_usernamepasswd, len(self.managers_usernamepasswd))
         for i in range(len(self.managers_usernamepasswd)):
             manager_usernames += [self.managers_usernamepasswd[i][0]]
             attn += [self.managers_usernamepasswd[i][0]]
         for i in range(len(self.cashiers_usernamepasswd)):
             cashier_usernames += [self.cashiers_usernamepasswd[i][0]]
             attn += [self.cashiers_usernamepasswd[i][0]]
-        # print(manager_usernames, cashier_usernames, attn)
         return manager_usernames, cashier_usernames, attn
 
 
