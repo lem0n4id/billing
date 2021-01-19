@@ -230,11 +230,14 @@ class invoice(object):
             where product_code=?'''
         product_code = int(self.ProductCode.get())
         c.execute(x, (product_code,))
+
         try:
+
             product_name, quantity_available = c.fetchall()[0]
             self.product_name.set(product_name)
             self.ProductName.focus_set()
             return (product_code, product_name, int(quantity_available))
+
         except:
             tkMessageBox.showinfo(
                 'Notice', 'please enter a valid product code')
@@ -252,11 +255,14 @@ class invoice(object):
         quantity = self.Quantity.get()
         if quantity == '':
             tkMessageBox.showinfo('Notice', 'please enter a valid quantity')
+
         try:
 
             if quantity_available - int(self.Quantity.get()) < 0:
                 raise ArithmeticError
+
             else:
+
                 self.ProductCode.focus_get()
                 self.bill_add()
         except:
@@ -264,9 +270,10 @@ class invoice(object):
                 'Notice', 'please enter a valid quantity,stock not available')
 
     def bill_add(self):
+
         self.id += 1
         self.iid += 1
-        # add into treeview(productcode, productname,mrp,price,quantity,total)
+
         productcode = int(self.ProductCode.get().strip().lower())
         productname = self.ProductName.get().strip().lower()
         quantity = int(self.Quantity.get().strip().lower())
@@ -274,6 +281,7 @@ class invoice(object):
         x = '''select mrp,price from available_stock
         where product_code = ?'''
         c.execute(x, (productcode,))
+
         mrp, price = c.fetchone()
         total = price*quantity
 
@@ -293,9 +301,6 @@ class invoice(object):
         try:
 
             for i in range(0, (len(self.items_billed)+1)):
-                # print(i)
-                # print('self.items_billed[i][1]',self.items_billed[i][1],type(self.items_billed[i][1]))
-                # print('row_id',row_id,type(row_id))
 
                 if self.items_billed[i][1] == row_id:
                     total = self.items_billed[0][0][5]
@@ -306,24 +311,24 @@ class invoice(object):
 
             self.iid -= 1
             self.id -= 1
+
             self.invoiceList.delete(row_id)
+
         except:
             tkMessageBox.showinfo('Notice', 'error- no entry to remove')
-
-    # customer details
 
     def phone_no_bind_function(self, event):
         x = '''
         select name, email_address, m_id from customer_details where phone_no = ?'''
         phone_no = self.PhoneNo.get().strip()
-        print(phone_no)
         c.execute(x, (phone_no,))
         try:
             name, email, m_id = c.fetchall()[0]
-            print(name, len(name))
+
             self.customer_name.set(name)
             self.email_address.set(email)
             self.membership_id.set(m_id)
+
         except:
             tkMessageBox.showinfo(
                 'Notice', 'phone no. does not exist, please enter a valid phone no.')
@@ -368,6 +373,7 @@ class invoice(object):
             x = '''select product_name, quantity from available_stock
             where product_code=?'''
             c.execute(x, (product_code,))
+
             try:
                 product_name, quantity_available = c.fetchall()[0]
                 if (quantity_available - int(quantity)) < 0:
@@ -378,10 +384,13 @@ class invoice(object):
                     where product_code = ?'''
                     c.execute(x, (quantity, product_code))
                     db.commit()
+
                     self.mas1 = Toplevel(self.mas)
                     self.mas1.title('window')
+
                     tk.Label(self.mas1, text='Thank you for shopping!').grid(
                         row=0, column=0, sticky=tk.W+tk.N)
+
                     tk.Button(self.mas1, text='Okay!', command=self.mas1.quit).grid(
                         row=1, column=0, sticky=tk.W+tk.N)
 
