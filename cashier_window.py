@@ -4,7 +4,6 @@ from tkinter import Toplevel
 import tkinter.font as font
 import tkinter.messagebox as tkMessageBox
 import tkinter.ttk as ttk
-from smtplib import *
 import sqlite3
 db = sqlite3.connect('database.db')
 c = db.cursor()
@@ -389,17 +388,18 @@ class invoice(object):
                     where product_code = ?'''
                     c.execute(x, (quantity, product_code))
                     db.commit()
+                    self.mas1 = Toplevel(self.mas)
+                    self.mas1.title('window')
+                    tk.Label(self.mas1, text='Thank you for shopping!').grid(
+                        row=0, column=0, sticky=tk.W+tk.N)
+                    tk.Button(self.mas1, text='Okay!', command=self.mas1.quit).grid(
+                        row=1, column=0, sticky=tk.W+tk.N)
 
             except:
                 tkMessageBox.showinfo(
                     'Notice', f'not enough stock of {product_name}')
 
-        self.mas1 = Toplevel(self.mas)
-        self.mas1.title('window')
-        tk.Label(self.mas1, text='Thank you for shopping!').grid(
-            row=0, column=0, sticky=tk.W+tk.N)
-        tk.Button(self.mas1, text='Okay!', command=self.mas1.quit).grid(
-            row=1, column=0, sticky=tk.W+tk.N)
+        
 
 
 if __name__ == "__main__":

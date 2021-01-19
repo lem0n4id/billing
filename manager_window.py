@@ -4,7 +4,6 @@ from tkinter import Toplevel
 import tkinter.font as font
 import tkinter.messagebox as tkMessageBox
 import tkinter.ttk as ttk
-from smtplib import *
 import sqlite3
 db = sqlite3.connect('database.db')
 c = db.cursor()
@@ -22,10 +21,6 @@ class manager_win(object):
         filemenu = tk.Menu(menubar, tearoff=0)
         filemenu.add_command(label='Exit', command=master.quit)
         menubar.add_cascade(label='File', menu=filemenu)
-
-        aboutmenu = tk.Menu(menubar, tearoff=0)
-        aboutmenu.add_command(label='About Me')
-        menubar.add_cascade(label='About', menu=aboutmenu)
 
         self.mas['menu'] = menubar
 
@@ -80,30 +75,33 @@ class stocks(object):
         barx3 = tk.Scrollbar(listbar, orient=tk.HORIZONTAL)
         barx3.pack(side=tk.BOTTOM, fill=tk.X)
 
-        self.EmployyeeList = ttk.Treeview(listbar, columns=invoice_list)
-        self.EmployyeeList.column(column='#0', width=0, stretch=False)
+        self.StockList = ttk.Treeview(listbar, columns=invoice_list)
+        self.StockList.column(column='#0', width=0, stretch=False)
         for i in range(len(invoice_list)):
-            self.EmployyeeList.heading(i, text=invoice_list[i])
-            self.EmployyeeList.column(i, width=200)
-        self.EmployyeeList.column(1, width=100)
-        self.EmployyeeList['height'] = 20
-        self.EmployyeeList.pack(side=tk.LEFT, fill=tk.BOTH)
+            self.StockList.heading(i, text=invoice_list[i])
+            self.StockList.column(i, width=200)
+        self.StockList.column(1, width=100)
+        self.StockList['height'] = 20
+        self.StockList.pack(side=tk.LEFT, fill=tk.BOTH)
 
         self.id_1 = 1
         self.iid_1 = 0
+        self.available_stock_inserted=[]
 
         self.stocks = self.get_available_stock()
         for i in self.stocks:
 
-            self.EmployyeeList.insert('', 'end', iid=self.iid_1, values=(i))
+            self.StockList.insert('', 'end', iid=self.iid_1, values=(i))
+            self.available_stock_inserted.append([i,self.iid_1])
 
             self.id_1 += 1
             self.iid_1 += 1
+        print(self.available_stock_inserted)
 
-        barx3.config(command=self.EmployyeeList.xview)
-        bary3.config(command=self.EmployyeeList.yview)
+        barx3.config(command=self.StockList.xview)
+        bary3.config(command=self.StockList.yview)
 
-        self.EmployyeeList.config(xscrollcommand=barx3.set,
+        self.StockList.config(xscrollcommand=barx3.set,
                                   yscrollcommand=bary3.set)
 
         listbar.pack(fill=tk.X)
@@ -208,15 +206,15 @@ class stocks(object):
         barx3 = tk.Scrollbar(listbar, orient=tk.HORIZONTAL)
         barx3.pack(side=tk.BOTTOM, fill=tk.X)
 
-        self.EmployyeeList = ttk.Treeview(listbar, columns=invoice_list)
-        self.EmployyeeList.column(column='#0', width=0, stretch=False)
+        self.PurchaseHistoryList = ttk.Treeview(listbar, columns=invoice_list)
+        self.PurchaseHistoryList.column(column='#0', width=0, stretch=False)
         for i in range(len(invoice_list)):
-            self.EmployyeeList.heading(i, text=invoice_list[i])
-            self.EmployyeeList.column(i, width=100)
-        self.EmployyeeList.column(1, width=100)
-        self.EmployyeeList['height'] = 20
-        # self.EmployyeeList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
-        self.EmployyeeList.pack(side=tk.LEFT, fill=tk.BOTH)
+            self.PurchaseHistoryList.heading(i, text=invoice_list[i])
+            self.PurchaseHistoryList.column(i, width=200)
+        self.PurchaseHistoryList.column(1, width=100)
+        self.PurchaseHistoryList['height'] = 20
+        # self.PurchaseHistoryList.bind('<<TreeviewSelect>>',self.getInvoiceItem)
+        self.PurchaseHistoryList.pack(side=tk.LEFT, fill=tk.BOTH)
 
         self.id_2 = 1
         self.iid_2 = 0
@@ -224,15 +222,15 @@ class stocks(object):
         self.history = self.get_stock_purchase_history()
         for i in self.history:
 
-            self.EmployyeeList.insert('', 'end', iid=self.iid_2, values=(i))
+            self.PurchaseHistoryList.insert('', 'end', iid=self.iid_2, values=(i))
 
             self.id_2 += 1
             self.iid_2 += 1
 
-        barx3.config(command=self.EmployyeeList.xview)
-        bary3.config(command=self.EmployyeeList.yview)
+        barx3.config(command=self.PurchaseHistoryList.xview)
+        bary3.config(command=self.PurchaseHistoryList.yview)
 
-        self.EmployyeeList.config(xscrollcommand=barx3.set,
+        self.PurchaseHistoryList.config(xscrollcommand=barx3.set,
                                   yscrollcommand=bary3.set)
 
         listbar.pack(fill=tk.X)
@@ -243,11 +241,6 @@ class stocks(object):
 
     # database integration
 
-    def update_insert_stock_purchase_history(self):
-        history = self.get_stock_purchase_history()
-        self.EmployyeeList.insert(
-            '', 'end', iid=self.iid_2, values=(history[-1]))
-
     def get_available_stock(self):
         stocks = ()
         x = '''select product_code, product_name, quantity, mrp, price  
@@ -255,7 +248,7 @@ class stocks(object):
         c.execute(x)
         for i in c.fetchall():
             stocks += (i,)
-        # print(stocks)
+        print("stocks\n",stocks)
 
         return stocks
 
@@ -266,11 +259,52 @@ class stocks(object):
         c.execute(x)
         for i in c.fetchall():
             history += (i,)
-        print(history)
+        print("history\n",history)
 
         return history
+    
+    def insert_available_stock(self):
+        stocks = self.get_available_stock()
+        self.StockList.insert(
+            '', 'end', iid=self.iid_2, values=(stocks[-1]))
+
+    def insert_stock_purchase_history(self):
+        history = self.get_stock_purchase_history()
+        self.PurchaseHistoryList.insert(
+            '', 'end', iid=self.iid_2, values=(history[-1]))
+    
+    def update_available_stock(self, product_code, quantity):
+        row_id=0
+        for i in self.available_stock_inserted:
+            if i[0][0] == product_code:
+                row_id = i[1]
+                product_name=i[0][1]
+                Quantity = i[0][2]
+                mrp=i[0][3]
+                price=i[0][4]
+        self.StockList.delete(row_id)
+        Quantity+=quantity
+        self.StockList.insert(
+            '', 'end', iid=row_id, values=(product_code, product_name,Quantity, mrp,price))
+
 
     def productcode_bind_function(self, event):
+        product_code=  int(self.ProductCode.get())
+        for i in self.available_stock_inserted:
+            print('i[0][0]',i[0][0])
+            if i[0][0] == product_code:
+                product_name=i[0][1]
+                Quantity = i[0][2]
+                mrp=i[0][3]
+                price=i[0][4]
+                
+                self.product_name.set(product_name)
+                self.mrp.set(str(mrp))
+                self.price_per_quantity.set(str(price))
+                self.Quantity.focus_set()
+                return
+
+
         self.ProductName.focus_set()
 
     def product_name_bind_function(self, event):
@@ -290,6 +324,21 @@ class stocks(object):
         c.execute(x)
         product_codes = c.fetchall()
         return product_codes
+    
+    def clear_enteries(self):
+        self.ProductCode.delete(0, tk.END)
+        self.ProductName.delete(0, tk.END)
+        self.Quantity.delete(0, tk.END)
+        self.Mrp.delete(0, tk.END)
+        self.PricePerQuantity.delete(0, tk.END)
+
+        self.product_name.set('')
+        self.productcode.set('')
+        self.quantity.set('')
+        self.mrp.set('')
+        self.price_per_quantity.set('')
+
+
 
     def add_button(self):
         # update database
@@ -300,22 +349,39 @@ class stocks(object):
         mrp = int(self.Mrp.get())
         price = int(self.PricePerQuantity.get())
 
-        # product_codes=self.product_codes()
-        # for i in product_codes:
+        product_codes=self.product_codes()
+        codes=[]
+        for i in product_codes:
+            codes.append(i[0])
+        
 
-        # if product_code  in product_codes: insert into stock_purchase_history ,update available_stock
-        # else: insert into stock_purchase_history ,insert into available_stock
-
-        x = '''update available_stock
-        set quantity= quantity+?
-        where product_code=?'''
-        c.execute(x, (quantity, product_code))
-        x1 = '''insert into stock_purchase_history
-        (product_code, product_name, quantity, date_of_purchase, price, mrp)
-        values (?,?,?,?,?,?)'''
-        c.execute(x1, (product_code, product_name, quantity, date, price, mrp))
-        db.commit()
-        self.update_insert_stock_purchase_history()
+        if product_code  in codes: #insert into stock_purchase_history ,update available_stock
+            x = '''update available_stock
+            set quantity= quantity+?
+            where product_code=?'''
+            c.execute(x, (quantity, product_code))
+            x1 = '''insert into stock_purchase_history
+            (product_code, product_name, quantity, date_of_purchase, price, mrp)
+            values (?,?,?,?,?,?)'''
+            c.execute(x1, (product_code, product_name, quantity, date, price, mrp))
+            db.commit()
+            self.update_available_stock(product_code, quantity)
+            self.insert_stock_purchase_history()
+            self.clear_enteries()
+        else: #insert into stock_purchase_history ,insert into available_stock
+            x='''insert into available_stock
+            (product_code, product_name, quantity, price, mrp)
+            values(?,?,?,?,?)'''
+            c.execute(x,(product_code, product_name, quantity, price, mrp))
+            x1='''insert into stock_purchase_history
+            (product_code, product_name, quantity, date_of_purchase, price, mrp)
+            values (?,?,?,?,?,?)'''
+            c.execute(x1, (product_code, product_name, quantity, date, price, mrp))
+            db.commit()
+            self.insert_available_stock()
+            self.insert_stock_purchase_history()
+            self.clear_enteries()
+        
 
 
 class EmployyeeDetails(object):

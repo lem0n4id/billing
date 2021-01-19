@@ -51,18 +51,21 @@ tables = ('''CREATE TABLE emp_details (
 # for i in tables:
 #   create_table_query(tables[5])
 # select_query('select * from sqlite_master')
+
 insert_commands = ('''
 insert into emp_details
 (emp_id, name, desgn, sex, age, address, phone_no, email_address, date_joined)
 values
-("000001", "yashas", "manager", "male", 18, "seawoods", "1234567890", "yashas123@gmail.com", "2020-11-30"),
-("000002", "rohan", "cashier", "male", 21, "nerul", "1111111110", "rohan123@gmail.com", "2020-11-30");''',
+("000001", "rohit", "manager", "male", 25, "abc street, mumbai", "1234567890", "rohit123@gmail.com", "2020-11-30"),
+("000002", "rohan", "cashier", "male", 21, "abc street, mumbai", "1111111110", "rohan123@gmail.com", "2020-11-30"),
+("000003", "aditi", "cashier", "female", 20, "abc street, mumbai", "1412564589", "aditi@gmail.com", "2020-12-20");''',
                    '''
 insert into users
 (emp_id, password, desgn)
 values
 ("000001","000001", "manager"),
-("000002","000002", "cashier");''',
+("000002","000002", "cashier"),
+("000003","000003", "cashier");''',
                    '''
 insert into stock_purchase_history 
 (product_code, product_name, quantity, date_of_purchase, price, mrp)
@@ -135,8 +138,21 @@ product_code, product_name, quantity, date, price, mrp = 90162603, "red bull 500
 # c.execute(x,(quantity,product_code))
 # db.commit()
 # select_query('select * from available_stock')
-x='''select product_code from available_stock'''
-c.execute(x)
-product_codes=c.fetchall()
-print(product_codes[0][0])
+# x='''select product_code from available_stock'''
+# c.execute(x)
+# product_codes=c.fetchall()
+# codes=[]
+# for i in product_codes:
+#         codes.append(i[0])
+# print(codes)
+# c.execute('drop table emp_details')
+# c.execute(tables[0])
+# c.execute(insert_commands[0])
+# db.commit()
+# c.execute('''insert into users
+# (emp_id, password, desgn)
+# values
+# ("000003","000003", "cashier");''')
+# db.commit()
 
+select_query('select * from available_stock')

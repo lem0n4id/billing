@@ -3,7 +3,6 @@ import tkinter as tk
 import tkinter.font as font
 import tkinter.messagebox as tkMessageBox
 import tkinter.ttk as ttk
-from smtplib import *
 import sqlite3
 import manager_window
 import cashier_window
