@@ -7,14 +7,6 @@ import sqlite3
 import manager_window
 import cashier_window
 
-'''
-there will be a common login window where both a manager and a cashier can log in.
-cashier does the billing at the counter.
-manager managers the stock and has the control over the customer data and analysing the sales data to
- see which products do good sale, at what time the customers usually come, etc etc,basically customer data
- also sets the sales price of goods
-'''
-
 
 class loginPage(object):
 
