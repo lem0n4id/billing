@@ -214,14 +214,14 @@ class stocks(object):
 
         self.history = self.get_stock_purchase_history()
 
-        #debug
-        self.purchase_history_inserted=[]
+        # debug
+        self.purchase_history_inserted = []
 
         for i in self.history:
 
             self.PurchaseHistoryList.insert(
                 '', 'end', iid=self.iid_2, values=(i))
-            self.purchase_history_inserted.append([i,self.iid_2])
+            self.purchase_history_inserted.append([i, self.iid_2])
 
             self.iid_2 += 1
 
@@ -261,13 +261,12 @@ class stocks(object):
     def insert_available_stock(self):
         stocks = self.get_available_stock()
         self.StockList.insert('', 'end', iid=self.iid_1, values=(stocks[-1]))
-        self.iid_1+=1
+        self.iid_1 += 1
 
     def insert_stock_purchase_history(self):
         history = self.get_stock_purchase_history()
         self.PurchaseHistoryList.insert(
             '', 'end', iid=self.iid_2, values=(history[-1]))
-        
 
     def update_available_stock(self, product_code, quantity):
         row_id = 0
@@ -275,7 +274,7 @@ class stocks(object):
         for i in self.available_stock_inserted:
             if i[0][0] == product_code:
                 row_id = i[1]
-                print(row_id,type(row_id))
+                print(row_id, type(row_id))
                 product_name = i[0][1]
                 Quantity = i[0][2]
                 mrp = i[0][3]
@@ -289,15 +288,16 @@ class stocks(object):
                 product_code, product_name, Quantity, mrp, price))
             return True
         except:
-            tkMessageBox.showerror('ERROR!','Cannot update the item right now, please restart the app!')
+            tkMessageBox.showerror(
+                'ERROR!', 'Cannot update the item right now, please restart the app!')
             return False
-        
-    #function to check if product code is in self.available_stock_inserted
+
+    # function to check if product code is in self.available_stock_inserted
     def check_if_in_available_stock_inserted(self, product_code):
-        there=False
+        there = False
         for i in self.available_stock_inserted:
-                if i[0][0] == product_code:
-                    there=True
+            if i[0][0] == product_code:
+                there = True
         return there
 
     def productcode_bind_function(self, event):
@@ -362,11 +362,10 @@ class stocks(object):
         mrp = int(self.Mrp.get())
         price = int(self.PricePerQuantity.get())
 
-        
+        # insert into stock_purchase_history ,update available_stock
+        if self.check_if_in_available_stock_inserted(product_code) == True:
 
-        if self.check_if_in_available_stock_inserted(product_code) == True:  # insert into stock_purchase_history ,update available_stock
-
-            a=self.update_available_stock(product_code, quantity)
+            a = self.update_available_stock(product_code, quantity)
             if a == True:
                 x = '''update available_stock
                 set quantity= quantity+?
@@ -377,17 +376,18 @@ class stocks(object):
                 (product_code, product_name, quantity, date_of_purchase, price, mrp)
                 values (?,?,?,?,?,?)'''
                 c.execute(x1, (product_code, product_name,
-                            quantity, date, price, mrp))
+                               quantity, date, price, mrp))
 
                 db.commit()
 
                 self.insert_stock_purchase_history()
-                self.iid_2+=1
+                self.iid_2 += 1
 
                 self.clear_enteries()
         else:  # insert into stock_purchase_history ,insert into available_stock
-            self.available_stock_inserted+=[[(product_code, product_name, quantity, mrp, price),self.iid_1]]
-            self.iid_1+=1
+            self.available_stock_inserted += [
+                [(product_code, product_name, quantity, mrp, price), self.iid_1]]
+            self.iid_1 += 1
 
             x = '''insert into available_stock
             (product_code, product_name, quantity, price, mrp)
@@ -404,7 +404,7 @@ class stocks(object):
 
             self.insert_available_stock()
             self.insert_stock_purchase_history()
-            self.iid_2+=1
+            self.iid_2 += 1
 
             self.clear_enteries()
 
@@ -467,7 +467,7 @@ class EmployyeeDetails(object):
 if __name__ == "__main__":
     root = tk.Tk()
     manager = manager_win(root)
-    
+
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
     window_width = 325
