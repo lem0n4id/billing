@@ -287,8 +287,10 @@ class stocks(object):
 
             self.StockList.insert('', 'end', iid=row_id, values=(
                 product_code, product_name, Quantity, mrp, price))
+            return True
         except:
             tkMessageBox.showerror('ERROR!','Cannot update the item right now, please restart the app!')
+            return False
         
     #function to check if product code is in self.available_stock_inserted
     def check_if_in_available_stock_inserted(self, product_code):
@@ -364,24 +366,25 @@ class stocks(object):
 
         if self.check_if_in_available_stock_inserted(product_code) == True:  # insert into stock_purchase_history ,update available_stock
 
-            x = '''update available_stock
-            set quantity= quantity+?
-            where product_code=?'''
-            c.execute(x, (quantity, product_code))
+            a=self.update_available_stock(product_code, quantity)
+            if a == True:
+                x = '''update available_stock
+                set quantity= quantity+?
+                where product_code=?'''
+                c.execute(x, (quantity, product_code))
 
-            x1 = '''insert into stock_purchase_history
-            (product_code, product_name, quantity, date_of_purchase, price, mrp)
-            values (?,?,?,?,?,?)'''
-            c.execute(x1, (product_code, product_name,
-                           quantity, date, price, mrp))
+                x1 = '''insert into stock_purchase_history
+                (product_code, product_name, quantity, date_of_purchase, price, mrp)
+                values (?,?,?,?,?,?)'''
+                c.execute(x1, (product_code, product_name,
+                            quantity, date, price, mrp))
 
-            db.commit()
+                db.commit()
 
-            self.update_available_stock(product_code, quantity)
-            self.insert_stock_purchase_history()
-            self.iid_2+=1
+                self.insert_stock_purchase_history()
+                self.iid_2+=1
 
-            self.clear_enteries()
+                self.clear_enteries()
         else:  # insert into stock_purchase_history ,insert into available_stock
             self.available_stock_inserted+=[[(product_code, product_name, quantity, mrp, price),self.iid_1]]
             self.iid_1+=1
