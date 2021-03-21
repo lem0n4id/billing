@@ -77,7 +77,6 @@ class stocks(object):
         self.StockList['height'] = 20
         self.StockList.pack(side=tk.LEFT, fill=tk.BOTH)
 
-        self.id_1 = 1
         self.iid_1 = 0
         self.available_stock_inserted = []
 
@@ -87,8 +86,9 @@ class stocks(object):
             self.StockList.insert('', 'end', iid=self.iid_1, values=(i))
             self.available_stock_inserted.append([i, self.iid_1])
 
-            self.id_1 += 1
             self.iid_1 += 1
+
+        print(self.available_stock_inserted)
 
         barx3.config(command=self.StockList.xview)
         bary3.config(command=self.StockList.yview)
@@ -210,17 +210,19 @@ class stocks(object):
         self.PurchaseHistoryList['height'] = 20
         self.PurchaseHistoryList.pack(side=tk.LEFT, fill=tk.BOTH)
 
-        self.id_2 = 1
         self.iid_2 = 0
 
         self.history = self.get_stock_purchase_history()
+
+        #debug
+        self.purchase_history_inserted=[]
 
         for i in self.history:
 
             self.PurchaseHistoryList.insert(
                 '', 'end', iid=self.iid_2, values=(i))
+            self.purchase_history_inserted.append([i,self.iid_2])
 
-            self.id_2 += 1
             self.iid_2 += 1
 
         barx3.config(command=self.PurchaseHistoryList.xview)
@@ -258,12 +260,14 @@ class stocks(object):
 
     def insert_available_stock(self):
         stocks = self.get_available_stock()
-        self.StockList.insert('', 'end', iid=self.iid_2, values=(stocks[-1]))
+        self.StockList.insert('', 'end', iid=self.iid_1, values=(stocks[-1]))
+        self.iid_1+=1
 
     def insert_stock_purchase_history(self):
         history = self.get_stock_purchase_history()
         self.PurchaseHistoryList.insert(
             '', 'end', iid=self.iid_2, values=(history[-1]))
+        
 
     def update_available_stock(self, product_code, quantity):
         row_id = 0
@@ -271,32 +275,49 @@ class stocks(object):
         for i in self.available_stock_inserted:
             if i[0][0] == product_code:
                 row_id = i[1]
+                print(row_id,type(row_id))
                 product_name = i[0][1]
                 Quantity = i[0][2]
                 mrp = i[0][3]
                 price = i[0][4]
 
-        self.StockList.delete(row_id)
-        Quantity += quantity
+        try:
+            self.StockList.delete(row_id)
+            Quantity += quantity
 
-        self.StockList.insert('', 'end', iid=row_id, values=(
-            product_code, product_name, Quantity, mrp, price))
+            self.StockList.insert('', 'end', iid=row_id, values=(
+                product_code, product_name, Quantity, mrp, price))
+        except:
+            tkMessageBox.showerror('ERROR!','Cannot update the item right now, please restart the app!')
+        
+    #function to check if product code is in self.available_stock_inserted
+    def check_if_in_available_stock_inserted(self, product_code):
+        there=False
+        for i in self.available_stock_inserted:
+                if i[0][0] == product_code:
+                    there=True
+        return there
 
     def productcode_bind_function(self, event):
 
         product_code = int(self.ProductCode.get())
-        for i in self.available_stock_inserted:
-            if i[0][0] == product_code:
-                product_name = i[0][1]
-                Quantity = i[0][2]
-                mrp = i[0][3]
-                price = i[0][4]
+        if self.check_if_in_available_stock_inserted(product_code):
 
-                self.product_name.set(product_name)
-                self.mrp.set(str(mrp))
-                self.price_per_quantity.set(str(price))
-                self.Quantity.focus_set()
-                return
+            for i in self.available_stock_inserted:
+                if i[0][0] == product_code:
+                    product_name = i[0][1]
+                    Quantity = i[0][2]
+                    mrp = i[0][3]
+                    price = i[0][4]
+
+                    self.product_name.set(product_name)
+                    self.mrp.set(str(mrp))
+                    self.price_per_quantity.set(str(price))
+                    self.Quantity.focus_set()
+                    break
+        else:
+            tkMessageBox.showwarning(
+                'Alert', 'New productcode, add all details')
 
         self.ProductName.focus_set()
 
@@ -339,12 +360,9 @@ class stocks(object):
         mrp = int(self.Mrp.get())
         price = int(self.PricePerQuantity.get())
 
-        product_codes = self.product_codes()
-        codes = []
-        for i in product_codes:
-            codes.append(i[0])
+        
 
-        if product_code in codes:  # insert into stock_purchase_history ,update available_stock
+        if self.check_if_in_available_stock_inserted(product_code) == True:  # insert into stock_purchase_history ,update available_stock
 
             x = '''update available_stock
             set quantity= quantity+?
@@ -361,9 +379,12 @@ class stocks(object):
 
             self.update_available_stock(product_code, quantity)
             self.insert_stock_purchase_history()
+            self.iid_2+=1
 
             self.clear_enteries()
         else:  # insert into stock_purchase_history ,insert into available_stock
+            self.available_stock_inserted+=[[(product_code, product_name, quantity, mrp, price),self.iid_1]]
+            self.iid_1+=1
 
             x = '''insert into available_stock
             (product_code, product_name, quantity, price, mrp)
@@ -380,6 +401,7 @@ class stocks(object):
 
             self.insert_available_stock()
             self.insert_stock_purchase_history()
+            self.iid_2+=1
 
             self.clear_enteries()
 
