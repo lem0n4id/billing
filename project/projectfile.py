@@ -1,6 +1,4 @@
-import datetime
 import tkinter as tk
-import tkinter.font as font
 import tkinter.messagebox as tkMessageBox
 import tkinter.ttk as ttk
 import sqlite3
@@ -9,8 +7,11 @@ import cashier_window
 
 
 class loginPage(object):
+    '''
+    This class makes the login page where you need to input username and password
+    '''
 
-    def __init__(self, master):
+    def __init__(self, master: tk) -> None:
         self.master = master
         self.master.title('Login')
         self._label = tk.Label(master, text='Welcome!', justify=tk.CENTER)
@@ -43,18 +44,18 @@ class loginPage(object):
             master, text='Clear', borderwidth=2, command=self.clear)
         self.clearButton.grid(row=3, column=2)
 
-    def loginit(self, event):
+    def loginit(self, event) -> None:
         self.login()
         self.clear()
 
-    def clear(self):
+    def clear(self) -> None:
         self.username.delete(0, tk.END)
         self.password.delete(0, tk.END)
 
-    def password_focus(self, event):
+    def password_focus(self, event) -> None:
         self.password.focus_set()
 
-    def login(self):
+    def login(self) -> None:
         self.usernm = self.username.get().strip()
         self.passwd = self.password.get().strip()
         self.clear()
@@ -89,13 +90,13 @@ class loginPage(object):
                         else:
                             self.connect_cashier(self.usernm)
 
-    def connect_cashier(self, usernm):
+    def connect_cashier(self, usernm: str) -> None:
         self.invoice = cashier_window.invoice(self.master, user=self.usernm)
 
-    def connect_manager(self, usernm):
+    def connect_manager(self, usernm: str) -> None:
         self.stock = manager_window.manager_win(self.master)
 
-    def get_login_details(self):
+    def get_login_details(self) -> tuple:
         login_infos = {'manager': [], 'cashier': []}
         x = "select * from users;"
         c.execute(x)
@@ -108,7 +109,7 @@ class loginPage(object):
                     no_of_users += 1
         return login_infos['manager'], login_infos['cashier'], no_of_users
 
-    def get_attn(self):
+    def get_attn(self) -> tuple:
         attn = []  # username/usernames
         manager_usernames = []
         cashier_usernames = []

@@ -1,7 +1,5 @@
-import datetime
 import tkinter as tk
-from tkinter import Toplevel
-import tkinter.font as font
+from tkinter import Tk, Toplevel
 import tkinter.messagebox as tkMessageBox
 import tkinter.ttk as ttk
 import sqlite3
@@ -10,7 +8,11 @@ c = db.cursor()
 
 
 class invoice(object):
-    def __init__(self, master, user=''):
+    '''
+    This class opens up the invoicing window
+    '''
+
+    def __init__(self, master: Tk, user: str = '') -> None:
         self.master = master
         self.user = user
         self.DATALIST = {}
@@ -216,7 +218,7 @@ class invoice(object):
         tk.Button(self.labelframeN2, text='Pay', command=self.thank_you_window).grid(
             row=1, column=1, sticky=tk.W+tk.N)
 
-    def get_name(self, emp_id):
+    def get_name(self, emp_id: str) -> str:
         x = '''select name from emp_details 
         where emp_id = ?'''
         name = ''
@@ -225,7 +227,7 @@ class invoice(object):
             name = i[0]
         return name
 
-    def get_productcode(self):
+    def get_productcode(self) -> tuple:
         x = '''select product_name, quantity from available_stock
             where product_code=?'''
         product_code = int(self.ProductCode.get())
@@ -243,13 +245,13 @@ class invoice(object):
                 'Notice', 'please enter a valid product code')
             return (0, 0, 0)
 
-    def productcode_bind_function(self, event):
+    def productcode_bind_function(self, event) -> None:
         product_code, product_name, quantity_available = self.get_productcode()
 
-    def product_name_bind_function(self, event):
+    def product_name_bind_function(self, event) -> None:
         self.Quantity.focus_set()
 
-    def quantity_bind_function(self, event):
+    def quantity_bind_function(self, event) -> None:
         product_code, product_name, quantity_available = self.get_productcode()
 
         quantity = self.Quantity.get()
@@ -269,7 +271,7 @@ class invoice(object):
             tkMessageBox.showinfo(
                 'Notice', 'please enter a valid quantity,stock not available')
 
-    def bill_add(self):
+    def bill_add(self) -> None:
 
         self.id += 1
         self.iid += 1
@@ -296,7 +298,7 @@ class invoice(object):
 
         self.items_billed.append([item, self.iid])
 
-    def bill_remove(self):
+    def bill_remove(self) -> None:
         row_id = int(self.iid)
         try:
 
@@ -317,7 +319,7 @@ class invoice(object):
         except:
             tkMessageBox.showinfo('Notice', 'error- no entry to remove')
 
-    def phone_no_bind_function(self, event):
+    def phone_no_bind_function(self, event) -> None:
         x = '''
         select name, email_address, m_id from customer_details where phone_no = ?'''
         phone_no = self.PhoneNo.get().strip()
@@ -333,17 +335,17 @@ class invoice(object):
             tkMessageBox.showinfo(
                 'Notice', 'phone no. does not exist, please enter a valid phone no.')
 
-    def customer_name_bind_function(self, event):
+    def customer_name_bind_function(self, event) -> None:
         pass
 
-    def email_address_bind_function(self, event):
+    def email_address_bind_function(self, event) -> None:
         pass
 
-    def enter_customer_details(self):
+    def enter_customer_details(self) -> None:
         self.phone_no_bind_function(self)
         pass
 
-    def clear_billing(self):
+    def clear_billing(self) -> None:
         self.ProductCode.delete(0, tk.END)
         self.ProductName.delete(0, tk.END)
         self.Quantity.delete(0, tk.END)
@@ -352,7 +354,7 @@ class invoice(object):
         self.product_name.set('')
         self.quantity.set('')
 
-    def clear_customer_details(self):
+    def clear_customer_details(self) -> None:
         self.PhoneNo.delete(0, tk.END)
         self.CustomerName.delete(0, tk.END)
         self.EmailAddress.delete(0, tk.END)
@@ -363,7 +365,7 @@ class invoice(object):
         self.email_address.set('')
         self.membership_id.set('N/A')
 
-    def thank_you_window(self):
+    def thank_you_window(self) -> None:
 
         for i in range(len(self.items_billed)):
             product_code = self.items_billed[i][0][0]

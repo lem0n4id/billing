@@ -1,7 +1,6 @@
-import datetime
+from datetime import date
 import tkinter as tk
 from tkinter import Toplevel
-import tkinter.font as font
 import tkinter.messagebox as tkMessageBox
 import tkinter.ttk as ttk
 import sqlite3
@@ -10,8 +9,15 @@ c = db.cursor()
 
 
 class manager_win(object):
+    '''
+    This class opens up the manager window
+    which consists of 
+        ->Stocks
+        ->Employee details
+    The stocks and employee details classes are defined below
+    '''
 
-    def __init__(self, master):
+    def __init__(self, master: tk) -> None:
         self.master = master
         self.mas = Toplevel(self.master)
         self.mas.title('Manage store')
@@ -38,18 +44,23 @@ class manager_win(object):
         tk.Button(self.mas, text='Employyee details', command=self.Employyee_details_button).grid(
             row=1, column=1, sticky=tk.N+tk.W, padx=10, pady=10, ipadx=5, ipady=5)
 
-    def Stocks_button(self):
+    def Stocks_button(self) -> None:
         stock_window = stocks(self.master)
 
-    def Employyee_details_button(self):
+    def Employyee_details_button(self) -> None:
         employyee_details = EmployyeeDetails(self.master)
-        pass
 
 
 class stocks(object):
+    '''
+    This class opens up the stocks window
+    which consists of 
+            ->Stock available
+            ->add stock purchase details
+            ->purchase history
+    '''
 
-    def __init__(self, master, user=''):
-        self.user = user
+    def __init__(self, master: tk) -> None:
         self.mas = tk.Toplevel(master)
         self.mas.title('Stock Management')
 
@@ -140,8 +151,8 @@ class stocks(object):
         self.date = tk.StringVar()
 
         # today's date
-        formatted_date = datetime.date.strftime(
-            datetime.date.today(), "%m/%d/%Y")
+        formatted_date = date.strftime(
+            date.today(), "%m/%d/%Y")
 
         self.Date = tk.Entry(self.labelframe2, textvariable=self.date)
         self.date.set(formatted_date)
@@ -238,7 +249,7 @@ class stocks(object):
 
         self.ProductCode.focus_set()
 
-    def get_available_stock(self):
+    def get_available_stock(self) -> tuple:
         stocks = ()
         x = '''select product_code, product_name, quantity, mrp, price  
         from available_stock;'''
@@ -248,7 +259,7 @@ class stocks(object):
 
         return stocks
 
-    def get_stock_purchase_history(self):
+    def get_stock_purchase_history(self) -> tuple:
         history = ()
         x = '''select date_of_purchase, product_code, product_name, quantity, mrp, price   
         from stock_purchase_history;'''
@@ -258,17 +269,17 @@ class stocks(object):
 
         return history
 
-    def insert_available_stock(self):
+    def insert_available_stock(self) -> None:
         stocks = self.get_available_stock()
         self.StockList.insert('', 'end', iid=self.iid_1, values=(stocks[-1]))
         self.iid_1 += 1
 
-    def insert_stock_purchase_history(self):
+    def insert_stock_purchase_history(self) -> None:
         history = self.get_stock_purchase_history()
         self.PurchaseHistoryList.insert(
             '', 'end', iid=self.iid_2, values=(history[-1]))
 
-    def update_available_stock(self, product_code, quantity):
+    def update_available_stock(self, product_code, quantity) -> bool:
         row_id = 0
 
         for i in self.available_stock_inserted:
@@ -293,14 +304,14 @@ class stocks(object):
             return False
 
     # function to check if product code is in self.available_stock_inserted
-    def check_if_in_available_stock_inserted(self, product_code):
+    def check_if_in_available_stock_inserted(self, product_code) -> bool:
         there = False
         for i in self.available_stock_inserted:
             if i[0][0] == product_code:
                 there = True
         return there
 
-    def productcode_bind_function(self, event):
+    def productcode_bind_function(self, event) -> None:
 
         product_code = int(self.ProductCode.get())
         if self.check_if_in_available_stock_inserted(product_code):
@@ -323,25 +334,25 @@ class stocks(object):
 
         self.ProductName.focus_set()
 
-    def product_name_bind_function(self, event):
+    def product_name_bind_function(self, event) -> None:
         self.Quantity.focus_set()
 
-    def quantity_bind_function(self, event):
+    def quantity_bind_function(self, event) -> None:
         self.Mrp.focus_set()
 
-    def mrp_bind_function(self, event):
+    def mrp_bind_function(self, event) -> None:
         self.PricePerQuantity.focus_set()
 
-    def price_per_quantity_bind_function(self, event):
+    def price_per_quantity_bind_function(self, event) -> None:
         self.add_button()
 
-    def product_codes(self):
+    def product_codes(self) -> list:
         x = '''select product_code from available_stock'''
         c.execute(x)
         product_codes = c.fetchall()
         return product_codes
 
-    def clear_enteries(self):
+    def clear_enteries(self) -> None:
         self.ProductCode.delete(0, tk.END)
         self.ProductName.delete(0, tk.END)
         self.Quantity.delete(0, tk.END)
@@ -354,7 +365,7 @@ class stocks(object):
         self.mrp.set('')
         self.price_per_quantity.set('')
 
-    def add_button(self):
+    def add_button(self) -> None:
         quantity = int(self.Quantity.get())
         product_code = int(self.ProductCode.get())
         product_name = self.ProductName.get()
@@ -410,8 +421,11 @@ class stocks(object):
 
 
 class EmployyeeDetails(object):
-    def __init__(self, master, user=''):
-        self.user = user
+    '''
+    This class opens up the employee details window
+    '''
+
+    def __init__(self, master: tk) -> None:
         self.mas = tk.Toplevel(master)
         self.mas.title('Employyee Details')
 
@@ -455,7 +469,7 @@ class EmployyeeDetails(object):
 
         listbar.pack(fill=tk.X)
 
-    def get_details(self):
+    def get_details(self) -> list:
 
         x = '''select emp_id, name, desgn, sex, age, address, phone_no, email_address, date_joined
          from emp_details'''
