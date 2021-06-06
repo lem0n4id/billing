@@ -99,7 +99,6 @@ class stocks(object):
 
             self.iid_1 += 1
 
-        print(self.available_stock_inserted)
 
         barx3.config(command=self.StockList.xview)
         bary3.config(command=self.StockList.yview)
@@ -285,7 +284,6 @@ class stocks(object):
         for i in self.available_stock_inserted:
             if i[0][0] == product_code:
                 row_id = i[1]
-                print(row_id, type(row_id))
                 product_name = i[0][1]
                 Quantity = i[0][2]
                 mrp = i[0][3]
