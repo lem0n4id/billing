@@ -1,4 +1,4 @@
-# billing
+# Invoice System
 This is my Computer Science project for class 12th.
 It features a grocery store invoicing system made using Tkinter. 
 
