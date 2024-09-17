@@ -48,9 +48,9 @@ tables = ('''CREATE TABLE emp_details (
   phone_no 	int(10),
   email_address varchar(355));'''
           )
-# for i in tables:
-#   create_table_query(tables[5])
-# select_query('select * from sqlite_master')
+for i in tables:
+  create_table_query(i)
+select_query('select * from sqlite_master')
 
 insert_commands = ('''
 insert into emp_details
@@ -83,9 +83,9 @@ values (000001, 'ramprasad', 1124578945, 'ramprasad111@gmail.com'),
 (000002, 'dev', 1547649164, 'dev64@gmail.com')
                 '''
                    )
-# for i in insert_commands:
-#     c.execute(i)
-#     db.commit()
+for i in insert_commands:
+    c.execute(i)
+    db.commit()
 
 # # retrive name using emp_id
 # x='''select name from emp_details
